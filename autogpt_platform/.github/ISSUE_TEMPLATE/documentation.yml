@@ -1,0 +1,69 @@
+name: 📚 Documentation
+description: Report an issue or suggest improvements to documentation
+title: "[DOCS] "
+labels: ["documentation"]
+assignees:
+  - SADOCKDOG
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 📚 Documentation Issue/Improvement
+        
+        Help us improve SADOCKDOG's documentation!
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: 📝 Type
+      description: What type of documentation issue is this?
+      options:
+        - Missing documentation
+        - Incorrect/outdated information
+        - Typo/grammar issue
+        - Unclear explanation
+        - Missing example
+        - Suggestion for improvement
+    validations:
+      required: true
+
+  - type: textarea
+    id: location
+    attributes:
+      label: 📍 Location
+      description: Where is the documentation issue?
+      placeholder: |
+        File: README.md
+        Section: "Installation"
+        Or URL: https://...
+    validations:
+      required: true
+
+  - type: textarea
+    id: issue
+    attributes:
+      label: 🐛 Issue Description
+      description: What's wrong or missing?
+      placeholder: Describe the documentation issue...
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: 💡 Suggested Fix
+      description: How should we improve it?
+      placeholder: Suggest the correction or improvement...
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: ✔️ Checklist
+      options:
+        - label: I have checked this documentation is current (not outdated version)
+          required: true
+        - label: I am willing to submit a PR with the fix
+          required: false

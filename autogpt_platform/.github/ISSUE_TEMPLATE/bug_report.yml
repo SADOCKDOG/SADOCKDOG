@@ -1,0 +1,127 @@
+name: 🐛 Bug Report
+description: Report a bug in SADOCKDOG Platform
+title: "[BUG] "
+labels: ["bug", "triage"]
+assignees:
+  - SADOCKDOG
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🐛 Bug Report for SADOCKDOG Platform
+        
+        Thank you for taking the time to report a bug! Please fill out the form below.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 📝 Description
+      description: A clear and concise description of the bug
+      placeholder: What happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 🔄 Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: ✅ Expected Behavior
+      description: What did you expect to happen?
+      placeholder: Describe what should happen
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: ❌ Actual Behavior
+      description: What actually happened?
+      placeholder: Describe what actually happens
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: 🧩 Component
+      description: Which part of SADOCKDOG is affected?
+      options:
+        - Frontend (Next.js)
+        - Backend API (FastAPI)
+        - Android Agent
+        - SADOCKDOG CLI
+        - Database
+        - Docker/Infrastructure
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: 🖥️ Environment
+      description: |
+        Please provide details about your environment
+      value: |
+        - OS: [e.g. Windows 11, Ubuntu 22.04, macOS 14]
+        - Browser: [e.g. Chrome 120, Firefox 121]
+        - Docker version: [e.g. 24.0.7]
+        - Node version: [e.g. 20.10.0]
+        - Python version: [e.g. 3.13.0]
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 📋 Logs
+      description: Relevant logs or error messages
+      placeholder: Paste logs here...
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: 📸 Screenshots
+      description: If applicable, add screenshots to help explain your problem
+      placeholder: Drag and drop images here
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: 📎 Additional Context
+      description: Add any other context about the problem here
+      placeholder: Any other relevant information...
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: ✔️ Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched existing issues to avoid duplicates
+          required: true
+        - label: I have provided all relevant information above
+          required: true
+        - label: I am willing to help fix this bug if guided
+          required: false

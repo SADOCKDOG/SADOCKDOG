@@ -20,9 +20,10 @@ x-backend-env: &backend-env # Docker internal service hostnames (override localh
   # Override Supabase URL for Docker network
   SUPABASE_URL: http://kong:8000
   # Database connection string for Docker network
-  # This cannot be constructed like in .env because we cannot interpolate values set here (DB_HOST)
-  DATABASE_URL: postgresql://postgres:your-super-secret-and-long-postgres-password@db:5432/postgres?connect_timeout=60&schema=platform
-  DIRECT_URL: postgresql://postgres:your-super-secret-and-long-postgres-password@db:5432/postgres?connect_timeout=60&schema=platform
+  # NOTE: Password is loaded from .env file via POSTGRES_PASSWORD variable
+  # This uses the same password configured in your .env file for consistency
+  DATABASE_URL: postgresql://postgres:$${POSTGRES_PASSWORD:-your-super-secret-and-long-postgres-password}@db:5432/postgres?connect_timeout=60&schema=platform
+  DIRECT_URL: postgresql://postgres:$${POSTGRES_PASSWORD:-your-super-secret-and-long-postgres-password}@db:5432/postgres?connect_timeout=60&schema=platform
 
 # Common env_file configuration for backend services
 x-backend-env-files: &backend-env-files

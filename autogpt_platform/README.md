@@ -1,6 +1,25 @@
-# AutoGPT Platform
+# 🐕 SADOCKDOG Platform
 
-Welcome to the AutoGPT Platform - a powerful system for creating and running AI agents to solve business problems. This platform enables you to harness the power of artificial intelligence to automate tasks, analyze data, and generate insights for your organization.
+> **Powered by AutoGPT** - Building the future of AI agent automation
+
+Welcome to **SADOCKDOG Platform** - an enhanced, production-ready system for creating, deploying, and managing AI agents that automate complex workflows and solve real-world business problems.
+
+Built on top of [AutoGPT](https://github.com/Significant-Gravitas/AutoGPT), SADOCKDOG adds powerful features, streamlined deployment, and enterprise-grade tooling to make AI agent development accessible and productive.
+
+[![License](https://img.shields.io/badge/License-PolyForm%20Shield-blue.svg)](LICENSE.md)
+[![GitHub Issues](https://img.shields.io/github/issues/SADOCKDOG/SADOCKDOG)](https://github.com/SADOCKDOG/SADOCKDOG/issues)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
+> 🔒 **Security Note**: Before deploying to production, please review our [Security Checklist](SECURITY.md) to ensure your deployment is secure.
+
+## ✨ What Makes SADOCKDOG Different?
+
+- 🤖 **SADOCKDOG Chat** - Simplified agent selector with chat interface (`/sadockdog`)
+- 📱 **Android App Developer Agent** - Autonomously creates complete Android apps with Kotlin & Material Design 3
+- 💻 **SADOCKDOG CLI** - Command-line interface for rapid agent execution
+- 📊 **SADOCKDOG Manager** - Comprehensive control panel for infrastructure management
+- 🎯 **Production-Ready** - Enhanced security, monitoring, and deployment tools
+- 📚 **Better Documentation** - Clear guides, examples, and troubleshooting
 
 ## Getting Started
 
@@ -37,6 +56,150 @@ To run the AutoGPT Platform, follow these steps:
    This command will start all the necessary backend services defined in the `docker-compose.yml` file in detached mode.
 
 4. After all the services are in ready state, open your browser and navigate to `http://localhost:3000` to access the AutoGPT Platform frontend.
+
+### SADOCKDOG: Agent selector and chat
+
+We added a minimal page and CLI to quickly select one of your agents and send a prompt.
+
+- Web: open `http://localhost:3000/sadockdog`
+   - Choose an agent from "My Agents"
+   - Type a message and execute — you'll get a link to the run details
+
+- CLI: `autogpt_platform/cli/sadockdog_cli.py`
+   - Create an API key in the web UI (Profile → API Keys) with EXECUTE_GRAPH
+   - Set environment variables and run:
+
+      PowerShell (Windows):
+
+      ```powershell
+      $Env:AUTOGPT_API_KEY = "<your_api_key>"
+      $Env:AGPT_BASE_URL = "http://localhost:8006"  # optional, default shown
+      python autogpt_platform/cli/sadockdog_cli.py
+      ```
+
+   - The CLI lists your agents, lets you pick one, and starts an execution with a `prompt` input
+
+## 🤖 Android App Developer Agent
+
+### What it does
+
+The **Android App Developer** agent autonomously creates complete Android applications:
+
+- ✅ Creates a GitHub repository with your app name
+- ✅ Generates modern Kotlin code with ViewBinding
+- ✅ Creates Material Design 3 layouts
+- ✅ Configures Gradle automatically
+- ✅ Generates AndroidManifest.xml with permissions
+- ✅ Creates resources (strings.xml, colors.xml)
+- ✅ Adds professional README with instructions
+- ✅ Everything committed automatically to GitHub
+
+### Installing the Agent
+
+**Option 1: Automatic Import (Recommended)**
+
+```powershell
+# 1. Get your API key from http://localhost:3000/profile
+# 2. Set environment variable
+$env:AUTOGPT_API_KEY = "your-api-key-here"
+
+# 3. Install requests if you don't have it
+pip install requests
+
+# 4. Run the importer
+python import_android_agent.py
+```
+
+**Option 2: Manual Import**
+
+1. Go to http://localhost:3000/build
+2. Click "Import" button (top right)
+3. Select file: `graph_templates/Android_App_Developer_Agent.json`
+4. **Important:** Open the imported agent and configure credentials:
+   - Select each "GitHub Create File" and "GitHub Create Repository" block
+   - In "Credentials" field, select your GitHub OAuth2
+   - Save the agent
+
+### Using the Agent
+
+**From Chat SADOCKDOG (Easy)**
+
+1. Go to http://localhost:3000/sadockdog
+2. Select **"Android App Developer"**
+3. Use this prompt format:
+
+```
+app_name: CalculadoraSimple
+app_description: Basic Android calculator with standard math operations
+features: addition, subtraction, multiplication, division, Material Design interface
+```
+
+4. Click **"Execute Agent"**
+5. Follow the monitoring link to watch real-time progress
+
+**Example Apps**
+
+**Todo List App:**
+```
+app_name: TodoListApp
+app_description: Task list app with local storage
+features: add tasks, mark complete, delete, filter by status, SharedPreferences persistence
+```
+
+**Notes App:**
+```
+app_name: QuickNotes
+app_description: App for taking and organizing quick notes
+features: create notes, edit, delete, search, categories, share notes
+```
+
+**Counter App:**
+```
+app_name: SimpleCounter
+app_description: Simple counter with increment and decrement
+features: increment, decrement, reset, value history, animations
+```
+
+### Expected Output
+
+The agent creates a GitHub repository with this structure:
+
+```
+your-app/
+├── app/
+│   ├── build.gradle                    # Gradle config
+│   └── src/
+│       └── main/
+│           ├── AndroidManifest.xml     # Manifest with permissions
+│           ├── java/com/sadockdog/yourapp/
+│           │   └── MainActivity.kt     # Main Kotlin code
+│           └── res/
+│               ├── layout/
+│               │   └── activity_main.xml    # Material Design UI
+│               └── values/
+│                   ├── strings.xml          # Text resources
+│                   └── colors.xml           # Color palette
+├── build.gradle                        # Root config
+└── README.md                          # Professional documentation
+```
+
+### Next Steps After Generation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/app-name.git
+   cd app-name
+   ```
+
+2. **Open in Android Studio:**
+   - File → Open → Select project folder
+   - Wait for Gradle sync
+
+3. **Run the app:**
+   - Connect Android device or start emulator
+   - Click "Run" button (▶️) in Android Studio
+   - Your app will install and launch!
+
 
 ### Running Just Core services
 
@@ -188,3 +351,45 @@ If you need to update the API client after making changes to the backend API:
    ```
 
 This will fetch the latest OpenAPI specification and regenerate the TypeScript client code.
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions to SADOCKDOG Platform! Please read our [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before submitting PRs.
+
+### Quick Start for Contributors:
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Make your changes and test them
+4. Commit with conventional commits: `git commit -m "feat: add amazing feature"`
+5. Push to your fork: `git push origin feature/amazing-feature`
+6. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the **PolyForm Shield License 1.0.0** - see the [LICENSE.md](LICENSE.md) file for details.
+
+## 🙏 Acknowledgments
+
+- Built on [AutoGPT](https://github.com/Significant-Gravitas/AutoGPT) by Significant Gravitas
+- Powered by OpenAI, Anthropic, and other AI providers
+- Thanks to all contributors who make this project possible
+
+## 📞 Support & Community
+
+- 🐛 [Report Bugs](https://github.com/SADOCKDOG/SADOCKDOG/issues/new?template=bug_report.yml)
+- ✨ [Request Features](https://github.com/SADOCKDOG/SADOCKDOG/issues/new?template=feature_request.yml)
+- 📚 [Documentation Issues](https://github.com/SADOCKDOG/SADOCKDOG/issues/new?template=documentation.yml)
+- 💬 [Discussions](https://github.com/SADOCKDOG/SADOCKDOG/discussions) (if enabled)
+
+---
+
+<p align="center">
+  Made with ❤️ by the SADOCKDOG Team
+</p>
+
+<p align="center">
+  <sub>SADOCKDOG Platform - Empowering AI Agent Development</sub>
+</p>

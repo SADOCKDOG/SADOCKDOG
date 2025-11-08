@@ -1,0 +1,111 @@
+name: ✨ Feature Request
+description: Suggest a new feature for SADOCKDOG Platform
+title: "[FEATURE] "
+labels: ["enhancement", "triage"]
+assignees:
+  - SADOCKDOG
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## ✨ Feature Request for SADOCKDOG Platform
+        
+        Thank you for suggesting a new feature! Please describe your idea below.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 🤔 Problem Statement
+      description: Is your feature request related to a problem? Please describe.
+      placeholder: I'm frustrated when...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: 💡 Proposed Solution
+      description: Describe the solution you'd like
+      placeholder: I would like to see...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: 🧩 Component
+      description: Which part of SADOCKDOG would this affect?
+      options:
+        - Frontend (Next.js)
+        - Backend API (FastAPI)
+        - Android Agent
+        - SADOCKDOG CLI
+        - SADOCKDOG Manager
+        - Database
+        - Docker/Infrastructure
+        - Documentation
+        - New Feature/Component
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 📊 Priority
+      description: How important is this feature to you?
+      options:
+        - Low - Nice to have
+        - Medium - Would improve workflow
+        - High - Critical for my use case
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 🔄 Alternatives Considered
+      description: Describe alternatives you've considered
+      placeholder: Other approaches that could work...
+    validations:
+      required: false
+
+  - type: textarea
+    id: mockups
+    attributes:
+      label: 🎨 Mockups/Examples
+      description: Add mockups, screenshots, or examples if applicable
+      placeholder: Drag and drop images or links here
+    validations:
+      required: false
+
+  - type: textarea
+    id: use_case
+    attributes:
+      label: 📝 Use Case
+      description: Describe a specific scenario where this feature would be useful
+      placeholder: When I'm working on... I need to...
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: 📎 Additional Context
+      description: Add any other context about the feature request here
+      placeholder: Any other relevant information...
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: ✔️ Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched existing issues/PRs for similar features
+          required: true
+        - label: This feature aligns with SADOCKDOG's goals
+          required: true
+        - label: I am willing to contribute to implementing this feature
+          required: false
