@@ -105,6 +105,31 @@ jobs:
           ENCRYPTION_KEY: test_encryption_key_for_ci_only
           DIRECT_URL: postgresql://postgres:test_password_sadockdog@localhost:5432/postgres?schema=platform
         run: |
-          echo "⚠️ Backend tests temporarily disabled - focusing on lint/format checks"
+          poetry run pytest -v --maxfail=3 --tb=short \
+            --ignore=backend/blocks/airtable \
+            --ignore=backend/blocks/test \
+            --ignore=backend/data/credit_ceiling_test.py \
+            --ignore=backend/data/credit_concurrency_test.py \
+            --ignore=backend/data/credit_integration_test.py \
+            --ignore=backend/data/credit_metadata_test.py \
+            --ignore=backend/data/credit_refund_test.py \
+            --ignore=backend/data/credit_underflow_test.py \
+            --ignore=backend/data/credit_user_balance_migration_test.py \
+            --ignore=backend/executor/manager_low_balance_test.py \
+            --ignore=backend/server/routers/analytics_improved_test.py \
+            --ignore=backend/server/routers/analytics_parametrized_test.py \
+            --ignore=backend/server/routers/analytics_test.py \
+            --ignore=backend/server/v2/admin \
+            --ignore=backend/server/v2/otto \
+            --ignore=backend/server/v2/turnstile \
+            --ignore=backend/util/cloud_storage_test.py \
+            --ignore=backend/util/virus_scanner_test.py \
+            --ignore=test/blocks \
+            --ignore=test/sdk \
+            backend/blocks/test/test_block.py \
+            backend/data/model_test.py \
+            backend/data/graph_test.py \
+            backend/util/test_json.py \
+            backend/util/decorator_test.py
       - name: ✅ Tests passed
         run: echo "🎉 All backend tests passed!"
