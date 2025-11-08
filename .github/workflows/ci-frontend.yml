@@ -20,17 +20,23 @@ jobs:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      - name: 📦 Setup Node.js
+      - name: � Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: 🔧 Enable corepack (pnpm)
+        run: corepack enable
+
+      - name: ✅ pnpm version
+        run: pnpm -v
+
+      - name: � Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
           cache-dependency-path: autogpt_platform/frontend/pnpm-lock.yaml
-
-      - name: 📥 Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
 
       - name: 📚 Install dependencies
         working-directory: autogpt_platform/frontend
@@ -62,17 +68,23 @@ jobs:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      - name: 📦 Setup Node.js
+      - name: � Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: 🔧 Enable corepack (pnpm)
+        run: corepack enable
+
+      - name: ✅ pnpm version
+        run: pnpm -v
+
+      - name: � Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
           cache-dependency-path: autogpt_platform/frontend/pnpm-lock.yaml
-
-      - name: 📥 Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
 
       - name: 📚 Install dependencies
         working-directory: autogpt_platform/frontend
