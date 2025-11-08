@@ -1,153 +1,82 @@
+# Dependabot configuration for SADOCKDOG Platform
+# Automatically creates PRs for dependency updates
+
 version: 2
 updates:
-  # autogpt_libs (Poetry project)
+  # Backend - Python dependencies
   - package-ecosystem: "pip"
-    directory: "autogpt_platform/autogpt_libs"
+    directory: "/autogpt_platform/backend"
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "06:00"
     open-pull-requests-limit: 10
-    target-branch: "dev"
+    labels:
+      - "dependencies"
+      - "backend"
+      - "python"
     commit-message:
-      prefix: "chore(libs/deps)"
-      prefix-development: "chore(libs/deps-dev)"
-    ignore:
-      - dependency-name: "poetry"
-    groups:
-      production-dependencies:
-        dependency-type: "production"
-        update-types:
-          - "minor"
-          - "patch"
-      development-dependencies:
-        dependency-type: "development"
-        update-types:
-          - "minor"
-          - "patch"
+      prefix: "deps(backend)"
+    reviewers:
+      - "SADOCKDOG"
 
-  # backend (Poetry project)
-  - package-ecosystem: "pip"
-    directory: "autogpt_platform/backend"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 10
-    target-branch: "dev"
-    commit-message:
-      prefix: "chore(backend/deps)"
-      prefix-development: "chore(backend/deps-dev)"
-    ignore:
-      - dependency-name: "poetry"
-    groups:
-      production-dependencies:
-        dependency-type: "production"
-        update-types:
-          - "minor"
-          - "patch"
-      development-dependencies:
-        dependency-type: "development"
-        update-types:
-          - "minor"
-          - "patch"
-
-  # frontend (Next.js project)
+  # Frontend - npm dependencies
   - package-ecosystem: "npm"
-    directory: "autogpt_platform/frontend"
+    directory: "/autogpt_platform/frontend"
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "06:00"
     open-pull-requests-limit: 10
-    target-branch: "dev"
+    labels:
+      - "dependencies"
+      - "frontend"
+      - "javascript"
     commit-message:
-      prefix: "chore(frontend/deps)"
-      prefix-development: "chore(frontend/deps-dev)"
-    groups:
-      production-dependencies:
-        dependency-type: "production"
-        update-types:
-          - "minor"
-          - "patch"
-      development-dependencies:
-        dependency-type: "development"
-        update-types:
-          - "minor"
-          - "patch"
-
-  # infra (Terraform)
-  - package-ecosystem: "terraform"
-    directory: "autogpt_platform/infra"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 5
-    target-branch: "dev"
-    commit-message:
-      prefix: "chore(infra/deps)"
-      prefix-development: "chore(infra/deps-dev)"
-
-    groups:
-      production-dependencies:
-        dependency-type: "production"
-        update-types:
-          - "minor"
-          - "patch"
-      development-dependencies:
-        dependency-type: "development"
-        update-types:
-          - "minor"
-          - "patch"
+      prefix: "deps(frontend)"
+    reviewers:
+      - "SADOCKDOG"
+    ignore:
+      # Ignore major version updates for stable packages
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "next"
+        update-types: ["version-update:semver-major"]
 
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
-    target-branch: "dev"
-    groups:
-      production-dependencies:
-        dependency-type: "production"
-        update-types:
-          - "minor"
-          - "patch"
-      development-dependencies:
-        dependency-type: "development"
-        update-types:
-          - "minor"
-          - "patch"
+      day: "monday"
+      time: "06:00"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "ci"
 
   # Docker
   - package-ecosystem: "docker"
-    directory: "autogpt_platform/"
+    directory: "/autogpt_platform/backend"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
-    target-branch: "dev"
-    groups:
-      production-dependencies:
-        dependency-type: "production"
-        update-types:
-          - "minor"
-          - "patch"
-      development-dependencies:
-        dependency-type: "development"
-        update-types:
-          - "minor"
-          - "patch"
-
-  # Docs
-  - package-ecosystem: "pip"
-    directory: "docs/"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 1
-    target-branch: "dev"
+      day: "monday"
+      time: "06:00"
+    labels:
+      - "dependencies"
+      - "docker"
     commit-message:
-      prefix: "chore(docs/deps)"
-    groups:
-      production-dependencies:
-        dependency-type: "production"
-        update-types:
-          - "minor"
-          - "patch"
-      development-dependencies:
-        dependency-type: "development"
-        update-types:
-          - "minor"
-          - "patch"
+      prefix: "deps(docker)"
+
+  - package-ecosystem: "docker"
+    directory: "/autogpt_platform/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+    labels:
+      - "dependencies"
+      - "docker"
+    commit-message:
+      prefix: "deps(docker)"

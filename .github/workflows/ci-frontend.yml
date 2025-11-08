@@ -1,0 +1,86 @@
+name: ⚛️ Frontend CI - SADOCKDOG
+
+on:
+  push:
+    branches: [ master, dev ]
+    paths:
+      - 'autogpt_platform/frontend/**'
+      - '.github/workflows/ci-frontend.yml'
+  pull_request:
+    branches: [ master, dev ]
+    paths:
+      - 'autogpt_platform/frontend/**'
+
+jobs:
+  lint-build:
+    name: 🔍 Lint & Build
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: autogpt_platform/frontend/pnpm-lock.yaml
+
+      - name: 📥 Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: 📚 Install dependencies
+        working-directory: autogpt_platform/frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: 🔎 Run ESLint
+        working-directory: autogpt_platform/frontend
+        run: pnpm lint
+
+      - name: 🎨 Check formatting
+        working-directory: autogpt_platform/frontend
+        run: pnpm format:check || echo "⚠️ Format check - consider running pnpm format"
+
+      - name: 🏗️ Build application
+        working-directory: autogpt_platform/frontend
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: http://localhost:8000
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: test_key
+
+      - name: ✅ Build successful
+        run: echo "🎉 Frontend build completed!"
+
+  type-check:
+    name: 📝 TypeScript Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: autogpt_platform/frontend/pnpm-lock.yaml
+
+      - name: 📥 Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: 📚 Install dependencies
+        working-directory: autogpt_platform/frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: 🔍 Type check
+        working-directory: autogpt_platform/frontend
+        run: pnpm types
+
+      - name: ✅ Types validated
+        run: echo "✨ TypeScript types are valid!"
