@@ -108,6 +108,7 @@ jobs:
         working-directory: autogpt_platform/backend
         env:
           DATABASE_URL: postgresql://postgres:test_password_sadockdog@localhost:5432/postgres?schema=platform
+          DIRECT_URL: postgresql://postgres:test_password_sadockdog@localhost:5432/postgres?schema=platform
         run: |
           poetry run prisma generate
           poetry run prisma migrate deploy
@@ -119,6 +120,7 @@ jobs:
           REDIS_HOST: localhost
           REDIS_PORT: 6379
           ENCRYPTION_KEY: test_encryption_key_for_ci_only
+          DIRECT_URL: postgresql://postgres:test_password_sadockdog@localhost:5432/postgres?schema=platform
         run: |
           poetry run pytest -v --maxfail=5
 
