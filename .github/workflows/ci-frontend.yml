@@ -45,7 +45,11 @@ jobs:
           # Usamos --no-frozen-lockfile para permitir instalación y generar lock actualizado si hace falta
           pnpm install --no-frozen-lockfile
 
-      - name: 🔎 Run ESLint
+      - name: �️ Generate API client
+        working-directory: autogpt_platform/frontend
+        run: pnpm run generate:api:force
+
+      - name: �🔎 Run ESLint
         working-directory: autogpt_platform/frontend
         run: pnpm lint
 
@@ -95,7 +99,11 @@ jobs:
           # Lockfile incompatible con versión actual; evitar fallo en CI
           pnpm install --no-frozen-lockfile
 
-      - name: 🔍 Type check
+      - name: �️ Generate API client
+        working-directory: autogpt_platform/frontend
+        run: pnpm run generate:api:force
+
+      - name: �🔍 Type check
         working-directory: autogpt_platform/frontend
         run: pnpm types
 
