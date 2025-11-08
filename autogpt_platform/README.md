@@ -6,11 +6,21 @@ Welcome to **SADOCKDOG Platform** - an enhanced, production-ready system for cre
 
 Built on top of [AutoGPT](https://github.com/Significant-Gravitas/AutoGPT), SADOCKDOG adds powerful features, streamlined deployment, and enterprise-grade tooling to make AI agent development accessible and productive.
 
+[![Backend CI](https://github.com/SADOCKDOG/SADOCKDOG/actions/workflows/ci-backend.yml/badge.svg)](https://github.com/SADOCKDOG/SADOCKDOG/actions/workflows/ci-backend.yml)
+[![Frontend CI](https://github.com/SADOCKDOG/SADOCKDOG/actions/workflows/ci-frontend.yml/badge.svg)](https://github.com/SADOCKDOG/SADOCKDOG/actions/workflows/ci-frontend.yml)
+[![CodeQL](https://github.com/SADOCKDOG/SADOCKDOG/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/SADOCKDOG/SADOCKDOG/actions/workflows/codeql-analysis.yml)
 [![License](https://img.shields.io/badge/License-PolyForm%20Shield-blue.svg)](LICENSE.md)
 [![GitHub Issues](https://img.shields.io/github/issues/SADOCKDOG/SADOCKDOG)](https://github.com/SADOCKDOG/SADOCKDOG/issues)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 > 🔒 **Security Note**: Before deploying to production, please review our [Security Checklist](SECURITY.md) to ensure your deployment is secure.
+
+## 📚 Documentation
+
+- 📖 **[Architecture](../ARCHITECTURE.md)** - System design and tech stack
+- 🚀 **[Deployment Guide](../DEPLOYMENT.md)** - Production deployment instructions
+- 🤝 **[Contributing](../CONTRIBUTING.md)** - How to contribute to SADOCKDOG
+- 🔐 **[Security](SECURITY.md)** - Security best practices
 
 ## ✨ What Makes SADOCKDOG Different?
 
@@ -34,9 +44,9 @@ To run the AutoGPT Platform, follow these steps:
 
 1. Clone this repository to your local machine and navigate to the `autogpt_platform` directory within the repository:
 
-   ```
-   git clone <https://github.com/Significant-Gravitas/AutoGPT.git | git@github.com:Significant-Gravitas/AutoGPT.git>
-   cd AutoGPT/autogpt_platform
+   ```bash
+   git clone https://github.com/SADOCKDOG/SADOCKDOG.git
+   cd SADOCKDOG/autogpt_platform
    ```
 
 2. Run the following command:
