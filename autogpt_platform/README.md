@@ -40,7 +40,7 @@ Built on top of [AutoGPT](https://github.com/Significant-Gravitas/AutoGPT), SADO
 
 ### Running the System
 
-To run the AutoGPT Platform, follow these steps:
+To run the SADOCKDOG Platform, follow these steps:
 
 1. Clone this repository to your local machine and navigate to the `autogpt_platform` directory within the repository:
 

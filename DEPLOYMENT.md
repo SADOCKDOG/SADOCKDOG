@@ -27,11 +27,11 @@
 ```bash
 # Clone repository
 git clone https://github.com/SADOCKDOG/SADOCKDOG.git
-cd SADOCKDOG
+cd SADOCKDOG/autogpt_platform
 
 # Configure environment
-cp .env.example .env
-nano .env  # Set production values
+cp .env.default .env
+nano .env  # Set production values (or use your editor)
 
 # Build and start services
 docker-compose -f docker-compose.yml up -d
@@ -130,9 +130,9 @@ curl https://yourdomain.com
 
 ### Database
 ```bash
-# Check Prisma connection
-cd backend
-poetry run prisma db execute --stdin <<< "SELECT 1"
+# Check Prisma connection (PowerShell)
+cd autogpt_platform/backend
+poetry run python -c "from prisma import Prisma; import asyncio; asyncio.run(Prisma().connect())"
 ```
 
 ## 🔄 Update Procedure

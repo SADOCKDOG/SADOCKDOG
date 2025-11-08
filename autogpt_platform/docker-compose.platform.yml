@@ -65,7 +65,7 @@ services:
       start_period: 5s
 
   redis:
-    image: redis:latest
+    image: redis:7.4
     ports:
       - "6379:6379"
     networks:
@@ -76,7 +76,7 @@ services:
       timeout: 5s
       retries: 5
   rabbitmq:
-    image: rabbitmq:management
+    image: rabbitmq:3.13-management
     container_name: rabbitmq
     healthcheck:
       test: rabbitmq-diagnostics -q ping
