@@ -63,10 +63,11 @@ jobs:
           severity: CRITICAL,HIGH,MEDIUM
           ignore-unfixed: true
       - name: Generate SBOM (CycloneDX JSON)
-        uses: anchore/syft-action@v0.17.0
+        uses: anchore/sbom-action@v0
         with:
           image: ${{ matrix.target.tag }}
-          output: cyclonedx-json=sbom-${{ matrix.target.name }}.json
+          format: cyclonedx-json
+          output-file: sbom-${{ matrix.target.name }}.json
       - name: Upload SARIF to Code Scanning
         uses: github/codeql-action/upload-sarif@v3
         with:
