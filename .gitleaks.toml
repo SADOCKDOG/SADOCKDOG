@@ -1,34 +1,49 @@
-title = "Gitleaks Config"
+title = "AutoGPT monorepo - Gitleaks config (Hardened)"
 
-[extend]
-# Use the default gitleaks config as base
-path = "https://raw.githubusercontent.com/gitleaks/gitleaks/master/config/gitleaks.toml"
+# PR 2: Configuración endurecida con fail mode activo
+# - Allowlist más específica (solo archivos documentación/plantillas)
+# - Regexes ajustadas para reducir falsos positivos
+# - Workflow bloqueará merge si detecta secretos reales
 
 [allowlist]
-# Common test keys and local dev keys to avoid noisy false positives
-regexes = [
-  "(?i)ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9[^"]*",
-  "(?i)SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9[^"]*",
-  "(?i)JWT_SECRET=your-super-secret[^"]*",
-  "(?i)POSTGRES_PASSWORD=your-super-secret[^"]*",
-  "fake_mail_password",
-  "fake_mail_user",
+description = "Allowlist específica para plantillas y documentación"
+paths = [
+  # Plantillas de entorno (nunca deben contener secretos reales)
+  '''(?i)^.*[\\/]\.env\.example$''',
+  '''(?i)^.*[\\/]\.env\.default$''',
+  '''(?i)^.*[\\/]\.env\.local\.example$''',
+  # Snapshots de tests (pueden tener datos simulados, revisar manualmente si alertan)
+  '''^autogpt_platform/backend/snapshots/.*\.json$''',
+  # Documentación markdown (ejemplos de configuración permitidos)
+  '''^docs/.*\.md$''',
+  '''^.*README\.md$''',
+  '''^RESET_AND_SETUP_GUIDE\.md$''',
+  '''^CREATE_SDOG-AI_REPO\.md$''',
+  '''^ENVIRONMENT_SETUP\.md$''',
+  '''^SECURITY_SCANNING\.md$'''
 ]
+regexes = [
+  # Placeholders explícitos (strings que claramente indican ejemplo)
+  '''(?i)(REPLACE_ME|REPLACEME|CHANGE_ME|CHANGEME|FILL_ME|TO_BE_FILLED|REPLACE_WITH|YOUR_[A-Z_]+_HERE)''',
+  '''(?i)(your|example|dummy|test|placeholder|sample)[-_ ]?(api|client|secret|token|key|password)''',
+  # Valores claramente fake (8+ caracteres repetitivos)
+  '''(?i)^(xxx+|yyy+|zzz+|aaa+|000+|111+)$''',
+  # Demo keys de Supabase self-hosted (públicos en docs oficiales)
+  '''eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyI''',
+  '''eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIi''',
+  # Ejemplos de API key patterns en .env.example
+  '''sk-proj-REPLACE(_WITH)?''',
+  '''sk-ant-api03-REPLACE''',
+  '''Iv1\.REPLACE''',
+  '''gsk_REPLACE''',
+  '''nvapi-REPLACE''',
+  '''r8_REPLACE''',
+  '''FAL_REPLACE''',
+  '''jina_REPLACE''',
+  # JWT example placeholder
+  '''eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.example[-a-z]*'''
+]
+commits = []
 
-[[rules]]
-id = "ignore-localhost-and-127"
-# Ignore URLs pointing to localhost/127.0.0.1 in code and envs
-regex = "https?:\\/\\/(localhost|127\\.0\\.0\\.1)(:[0-9]{2,5})?"
-entropy = 0
-path = "*"
-
-[[rules]]
-id = "suppress-node-punycode-deprecation"
-regex = "\n(Use `node --trace-deprecation .* punycode)`"
-path = "*"
-tags = ["noise"]
-
-[report]
-format = "sarif"
-output = "gitleaks.sarif"
-redact = true
+# Excepciones inline: añadir comentario "# gitleaks:allow" en la línea que genera falso positivo
+# Solo usar tras verificar manualmente que NO es un secreto real

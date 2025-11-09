@@ -28,7 +28,7 @@ jobs:
           version: latest
           config-path: .gitleaks.toml
           redaction: true
-        continue-on-error: true
+        # PR 2: Activado fail mode - workflow falla si detecta secretos reales
 
       - name: Upload SARIF report
         if: always()
