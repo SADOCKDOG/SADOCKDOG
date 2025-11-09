@@ -2,13 +2,13 @@
 FROM node:21-alpine AS base
 WORKDIR /app
 RUN corepack enable
-COPY autogpt_platform/frontend/package.json autogpt_platform/frontend/pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml ./
 RUN --mount=type=cache,target=/root/.local/share/pnpm pnpm install --frozen-lockfile
 
 # Build stage for prod
 FROM base AS build
 
-COPY autogpt_platform/frontend/ .
+COPY . .
 # Allow CI to opt-in to Playwright test build-time flags
 ARG NEXT_PUBLIC_PW_TEST="false"
 ENV NEXT_PUBLIC_PW_TEST=$NEXT_PUBLIC_PW_TEST
@@ -49,3 +49,4 @@ USER nextjs
 
 EXPOSE 3000
 CMD ["node", "server.js"]
+
