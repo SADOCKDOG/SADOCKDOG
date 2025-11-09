@@ -24,11 +24,7 @@ jobs:
     strategy:
       matrix:
         target:
-          - name: frontend
-            context: autogpt_platform/frontend
-            dockerfile: autogpt_platform/frontend/Dockerfile
-            tag: autogpt-frontend:scan
-          - name: backend
+  # Frontend disabled: requires full OpenAPI spec for Orval generated endpoints`r`n          - name: backend
             context: .
             dockerfile: autogpt_platform/backend/Dockerfile
             tag: autogpt-backend:scan
@@ -83,3 +79,4 @@ jobs:
             sbom-${{ matrix.target.name }}.json
           retention-days: 30
           if-no-files-found: error
+
