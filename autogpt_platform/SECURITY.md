@@ -368,7 +368,245 @@ docker logs autogpt-supabase-auth-1 | grep -i smtp
 - [ ] Email templates reviewed and tested
 - [ ] Unsubscribe mechanism implemented (if sending marketing emails)
 
-### 11. Monitoring & Logging
+### 11. Feature Flags (LaunchDarkly)
+
+LaunchDarkly provides feature flag management for safe feature rollouts, A/B testing, 
+and runtime configuration without deployments. Critical for production deployments.
+
+#### Why Use Feature Flags?
+
+- **Gradual Rollouts**: Release features to percentage of users (5% → 25% → 100%)
+- **Kill Switches**: Instantly disable problematic features without deployment
+- **A/B Testing**: Test variants with different user segments
+- **Environment Management**: Different flag states per environment (dev/staging/prod)
+- **User Targeting**: Enable features for specific users, teams, or segments
+- **Reduce Risk**: Decouple deployment from release
+
+#### Required Configuration
+
+**Backend (Server-Side SDK):**
+```bash
+# In .env (root directory)
+LAUNCH_DARKLY_SDK_KEY=sdk-YOUR-SERVER-SIDE-SDK-KEY
+```
+
+**Frontend (Client-Side SDK):**
+```bash
+# In frontend/.env
+NEXT_PUBLIC_LAUNCHDARKLY_CLIENT_ID=your-client-side-id
+NEXT_PUBLIC_LAUNCHDARKLY_ENABLED=true
+```
+
+#### Setup Steps
+
+1. **Create LaunchDarkly Account**
+   - Sign up at https://launchdarkly.com
+   - Free tier: 1,000 Monthly Active Users (MAU)
+   - Pro tier: Unlimited MAU, advanced targeting
+
+2. **Create Project and Environments**
+   - Create project: "AutoGPT Platform"
+   - Environments: Development, Staging, Production
+   - Each environment has separate SDK keys
+
+3. **Get SDK Keys**
+   - **Backend (Server-Side):**
+     - Navigate to: Settings > Environments > Production > SDK Key
+     - Copy the **SDK key** (starts with `sdk-`)
+     - Add to backend `.env` as `LAUNCH_DARKLY_SDK_KEY`
+   
+   - **Frontend (Client-Side):**
+     - Navigate to: Settings > Environments > Production > Client-side ID
+     - Copy the **Client-side ID**
+     - Add to `frontend/.env` as `NEXT_PUBLIC_LAUNCHDARKLY_CLIENT_ID`
+     - Set `NEXT_PUBLIC_LAUNCHDARKLY_ENABLED=true`
+
+4. **Configure Feature Flags**
+   - Go to LaunchDarkly dashboard > Feature Flags
+   - Create new flags or use existing ones
+   - Set default values and targeting rules
+
+#### Current Feature Flags
+
+Defined in `backend/util/feature_flag.py` as `Flag` enum:
+
+| Flag Key | Type | Description | Default |
+|----------|------|-------------|---------|
+| `AutoMod` | boolean | Automated content moderation | `false` |
+| `ai-agent-execution-summary` | boolean | AI activity status tracking | `false` |
+| `beta-blocks` | boolean | Enable experimental block types | `false` |
+| `agent-activity` | boolean | Agent activity monitoring | `false` |
+| `enable-platform-payment` | boolean | Enable payment features | `false` |
+
+#### Usage Examples
+
+**Backend (Python):**
+```python
+from backend.util.feature_flag import Flag, get_flag_bool
+
+# Simple boolean flag
+if get_flag_bool(Flag.ENABLE_PLATFORM_PAYMENT, user_id, default=False):
+    # Feature enabled for this user
+    process_payment(user_id, amount)
+else:
+    # Feature disabled, use free tier
+    log_warning("Payments disabled via feature flag")
+
+# With user context
+from backend.util.feature_flag import get_user_context
+
+user_context = await get_user_context(user_id)
+flag_value = get_flag_bool(Flag.BETA_BLOCKS, user_context, default=False)
+```
+
+**Frontend (TypeScript/React):**
+```typescript
+import { useGetFlag } from '@/services/feature-flags/use-get-flag';
+import { withFeatureFlag } from '@/services/feature-flags/with-feature-flag';
+
+// Hook usage
+function PaymentButton() {
+  const enablePayment = useGetFlag('enable-platform-payment', false);
+  
+  if (!enablePayment) return null;
+  return <button>Upgrade to Pro</button>;
+}
+
+// HOC usage
+const PaymentFeature = withFeatureFlag(
+  'enable-platform-payment',
+  () => <ProPaymentFlow />,
+  () => <FreeUserMessage />
+);
+```
+
+#### Security Best Practices
+
+- [ ] **Never commit SDK keys** to version control
+- [ ] **Use environment-specific keys** (separate Dev/Staging/Prod)
+- [ ] **Rotate SDK keys** if compromised (regenerate in dashboard)
+- [ ] **Limit SDK key permissions** (use role-based access in LaunchDarkly)
+- [ ] **Monitor flag changes** (audit log in LaunchDarkly dashboard)
+- [ ] **Set up alerts** for critical flag changes
+- [ ] **Use tags** to organize flags (e.g., `payment`, `beta`, `security`)
+- [ ] **Archive old flags** after full rollout (cleanup technical debt)
+
+#### Client-Side ID vs SDK Key
+
+| Type | Where | Exposure | Usage |
+|------|-------|----------|-------|
+| **SDK Key** | Backend | Secret (never expose) | Server-side evaluation |
+| **Client-side ID** | Frontend | Public (safe to expose) | Browser-based evaluation |
+
+> **CRITICAL:** Never use server-side SDK key in frontend! Always use client-side ID.
+
+#### Integration with Sentry
+
+The platform integrates LaunchDarkly with Sentry for flag usage tracking:
+
+```typescript
+// frontend/src/services/feature-flags/feature-flag-provider.tsx
+options={{
+  inspectors: [Sentry.buildLaunchDarklyFlagUsedHandler()],
+}}
+```
+
+Benefits:
+- Track which flags were active during errors
+- Correlate bug reports with feature flag states
+- Debug issues specific to flag combinations
+
+#### Gradual Rollout Strategy
+
+**Example: Releasing Payment Feature**
+
+1. **Development (0% users):**
+   ```
+   Flag: enable-platform-payment
+   Environment: Development
+   Default: ON for all developers
+   ```
+
+2. **Staging (100% test users):**
+   ```
+   Flag: enable-platform-payment
+   Environment: Staging
+   Default: ON for all staging users
+   ```
+
+3. **Production - Phase 1 (5% users):**
+   ```
+   Flag: enable-platform-payment
+   Environment: Production
+   Targeting: 5% random users
+   Rollout: Percentage rollout
+   ```
+
+4. **Production - Phase 2 (25% users):**
+   - Monitor metrics (conversion, errors)
+   - Increase to 25% if metrics are good
+
+5. **Production - Phase 3 (100% users):**
+   - Full rollout after validation
+   - Keep flag for kill switch capability
+
+6. **Cleanup:**
+   - After 30 days of stability, remove flag from code
+   - Archive flag in LaunchDarkly
+
+#### Monitoring & Debugging
+
+**Check Initialization (Backend):**
+```bash
+# View backend logs
+docker logs autogpt-backend-1 | grep LaunchDarkly
+
+# Should see:
+# "LaunchDarkly client initialized successfully"
+```
+
+**Check Initialization (Frontend):**
+```bash
+# Browser console
+# Look for LaunchDarkly debug messages
+# Network tab: Check for events.launchdarkly.com requests
+```
+
+**LaunchDarkly Dashboard:**
+- **Debugger Tab**: Real-time flag evaluations
+- **Users Tab**: See which users evaluated which flags
+- **Insights Tab**: Flag usage statistics
+- **Audit Log**: History of flag changes
+
+#### Troubleshooting
+
+| Issue | Possible Cause | Solution |
+|-------|----------------|----------|
+| "LaunchDarkly not initialized" | Missing SDK key | Set `LAUNCH_DARKLY_SDK_KEY` in `.env` |
+| Default values always used | Invalid SDK key format | Verify key starts with `sdk-` |
+| Frontend flags not working | Not in cloud environment | `environment.isCloud()` must return `true` |
+| User context missing | User not authenticated | Check `useSupabase()` returns valid user |
+| Flag changes not reflecting | Client caching | Wait 2-5 seconds for updates (streaming) |
+| Network errors | Firewall blocking | Allow `*.launchdarkly.com` in firewall |
+
+#### Production Checklist
+
+- [ ] LaunchDarkly account created
+- [ ] Project and environments configured (Dev, Staging, Prod)
+- [ ] Backend SDK key configured in `.env`
+- [ ] Frontend client-side ID configured in `frontend/.env`
+- [ ] Frontend enabled with `NEXT_PUBLIC_LAUNCHDARKLY_ENABLED=true`
+- [ ] Test flag evaluation in each environment
+- [ ] All critical flags defined in `Flag` enum
+- [ ] Default values set for all flags (graceful degradation)
+- [ ] Sentry integration tested
+- [ ] Monitoring alerts configured
+- [ ] SDK keys stored in GitHub Secrets (for CI/CD)
+- [ ] Team trained on flag management
+- [ ] Rollout strategy documented
+- [ ] Flag cleanup process established
+
+### 12. Monitoring & Logging
 
 - [ ] **Set up error tracking** (Sentry)
 - [ ] **Configure log retention** policies
