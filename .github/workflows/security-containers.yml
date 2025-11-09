@@ -25,6 +25,10 @@ jobs:
             context: autogpt_platform/frontend
             dockerfile: autogpt_platform/frontend/Dockerfile
             tag: autogpt-frontend:scan
+          - name: backend
+            context: .
+            dockerfile: autogpt_platform/backend/Dockerfile
+            tag: autogpt-backend:scan
     steps:
       - name: Checkout
         uses: actions/checkout@v4
