@@ -5,6 +5,9 @@ on:
     branches: [ master, dev ]
   pull_request:
     branches: [ master, dev ]
+  # Permitir ejecución manual y en PRs con permisos del repo base
+  pull_request_target:
+  workflow_dispatch:
 
 permissions:
   contents: read
