@@ -87,8 +87,8 @@ jobs:
       - name: Create test file with fake secret
         run: |
           mkdir -p /tmp/test-gitleaks
-          # Usar un patrón conocido por reglas built-in de Gitleaks (AWS Access Key ID)
-          echo 'AWS_ACCESS_KEY_ID=AKIA1234567890ABCD' > /tmp/test-gitleaks/test.txt
+          # AWS Access Keys son exactamente 20 caracteres después de AKIA
+          echo 'AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE' > /tmp/test-gitleaks/test.txt
 
       - name: Test detection on fake secret (should fail)
         id: test-detection
