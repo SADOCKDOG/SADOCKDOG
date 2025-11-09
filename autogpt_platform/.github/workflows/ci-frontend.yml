@@ -5,11 +5,12 @@ on:
     branches: [ master, dev ]
     paths:
       - 'autogpt_platform/frontend/**'
-      - '.github/workflows/ci-frontend.yml'
+      - 'autogpt_platform/.github/workflows/ci-frontend.yml'
   pull_request:
     branches: [ master, dev ]
     paths:
       - 'autogpt_platform/frontend/**'
+      - 'autogpt_platform/.github/workflows/ci-frontend.yml'
 
 jobs:
   lint-build:
