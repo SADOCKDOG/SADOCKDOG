@@ -1,16 +1,10 @@
 name: ⚛️ Frontend CI - SADOCKDOG
 
 on:
-  push:
-    branches: [ master, dev ]
-    paths:
-      - 'autogpt_platform/frontend/**'
-      - 'autogpt_platform/.github/workflows/ci-frontend.yml'
-  pull_request:
-    branches: [ master, dev ]
-    paths:
-      - 'autogpt_platform/frontend/**'
-      - 'autogpt_platform/.github/workflows/ci-frontend.yml'
+  # Desactivado de ejecución automática para evitar duplicidad con el
+  # workflow oficial (.github/workflows/platform-frontend-ci.yml).
+  # Si es necesario ejecutarlo manualmente, usar workflow_dispatch.
+  workflow_dispatch:
 
 jobs:
   lint-build:
