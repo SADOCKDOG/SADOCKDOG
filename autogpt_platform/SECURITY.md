@@ -200,16 +200,173 @@
 - [ ] **Restrict allowed file types**
 - [ ] **Use secure storage** (S3, GCS, etc.)
 
-### 10. Email Configuration
+### 10. Email Configuration (SMTP)
 
-- [ ] **Configure production SMTP** settings:
-  - [ ] `SMTP_HOST`
-  - [ ] `SMTP_PORT`
-  - [ ] `SMTP_USER`
-  - [ ] `SMTP_PASS`
-  - [ ] `SMTP_ADMIN_EMAIL`
+Production-grade email delivery is critical for user authentication, notifications, and system alerts. 
+Never use local mail services (e.g., `supabase-mail`) in production.
 
-- [ ] **Set up SPF, DKIM, DMARC** records
+#### Required SMTP Configuration
+
+Configure these environment variables in your `.env` file:
+
+```bash
+SMTP_HOST=smtp.your-provider.com
+SMTP_PORT=587                      # 587 (STARTTLS) or 465 (SSL/TLS)
+SMTP_USER=your-smtp-username
+SMTP_PASS=your-smtp-password
+SMTP_ADMIN_EMAIL=admin@yourdomain.com
+SMTP_SENDER_NAME=AutoGPT Platform
+```
+
+#### Recommended SMTP Providers
+
+**1. SendGrid (Recommended for high volume)**
+- Best for: Large-scale deployments, marketing emails
+- Free tier: 100 emails/day
+- Setup:
+  ```bash
+  SMTP_HOST=smtp.sendgrid.net
+  SMTP_PORT=587
+  SMTP_USER=apikey
+  SMTP_PASS=SG.your-sendgrid-api-key  # Generate in SendGrid dashboard
+  ```
+- DNS Setup: Configure sender authentication (SPF, DKIM, DMARC)
+- Monitoring: Dashboard with analytics, bounce tracking, spam reports
+
+**2. AWS SES (Simple Email Service)**
+- Best for: AWS infrastructure, cost-effective at scale
+- Free tier: 62,000 emails/month (from EC2)
+- Setup:
+  ```bash
+  SMTP_HOST=email-smtp.us-east-1.amazonaws.com  # Region-specific
+  SMTP_PORT=587
+  SMTP_USER=your-aws-smtp-username  # From AWS IAM
+  SMTP_PASS=your-aws-smtp-password  # From AWS IAM
+  ```
+- Requirements: Verify domain and email addresses
+- Note: Starts in sandbox mode (limited to verified recipients)
+
+**3. Mailgun**
+- Best for: Transactional emails, developer-friendly API
+- Free tier: 5,000 emails/month (3 months)
+- Setup:
+  ```bash
+  SMTP_HOST=smtp.mailgun.org
+  SMTP_PORT=587
+  SMTP_USER=postmaster@your-domain.mailgun.org
+  SMTP_PASS=your-mailgun-smtp-password
+  ```
+- Features: Email validation API, detailed logs, webhooks
+
+**4. Office 365 / Outlook (Enterprise)**
+- Best for: Organizations already using Microsoft 365
+- Setup:
+  ```bash
+  SMTP_HOST=smtp.office365.com
+  SMTP_PORT=587
+  SMTP_USER=your-email@yourdomain.com
+  SMTP_PASS=your-password  # Or app-specific password
+  ```
+- Limits: 10,000 recipients/day per mailbox
+- Requirement: Microsoft 365 Business subscription
+
+#### Email Deliverability Best Practices
+
+- [ ] **Configure DNS records** for your sending domain:
+  - **SPF (Sender Policy Framework)**: Prevents spoofing
+    ```
+    v=spf1 include:sendgrid.net ~all
+    ```
+  - **DKIM (DomainKeys Identified Mail)**: Cryptographic authentication
+    ```
+    Add TXT record provided by your SMTP provider
+    ```
+  - **DMARC (Domain-based Message Authentication)**: Policy for failed authentication
+    ```
+    v=DMARC1; p=quarantine; rua=mailto:postmaster@yourdomain.com
+    ```
+
+- [ ] **Use a dedicated sending domain** (e.g., `mail.yourdomain.com`)
+- [ ] **Warm up your domain** gradually (start with low volume, increase over weeks)
+- [ ] **Monitor bounce rates** (keep under 5%)
+- [ ] **Monitor spam complaint rates** (keep under 0.1%)
+- [ ] **Use double opt-in** for marketing emails
+- [ ] **Implement unsubscribe links** in all marketing communications
+
+#### Security Considerations
+
+- [ ] **Never commit SMTP credentials** to version control
+- [ ] **Rotate SMTP passwords** every 90 days
+- [ ] **Use TLS/SSL encryption** (ports 587 or 465, never 25)
+- [ ] **Restrict SMTP access** by IP address if possible
+- [ ] **Monitor for unauthorized usage** (unusual send volumes)
+- [ ] **Use app-specific passwords** for Gmail/Office 365
+
+#### Testing SMTP Configuration
+
+**Test connection:**
+```bash
+# Using telnet
+telnet smtp.sendgrid.net 587
+
+# Using openssl (with TLS)
+openssl s_client -connect smtp.sendgrid.net:587 -starttls smtp
+```
+
+**Send test email:**
+```bash
+# From backend container
+docker exec -it autogpt-backend-1 python -c "
+from backend.util.email import send_test_email
+send_test_email('test@example.com')
+"
+```
+
+**Check Supabase auth logs:**
+```bash
+docker logs autogpt-supabase-auth-1 | grep -i smtp
+```
+
+#### Troubleshooting Common Issues
+
+| Issue | Possible Cause | Solution |
+|-------|----------------|----------|
+| "Connection refused" | Wrong port or firewall | Check firewall rules, try port 465 |
+| "Authentication failed" | Invalid credentials | Regenerate SMTP password, check username format |
+| "TLS handshake failed" | SSL/TLS misconfiguration | Verify port (587 for STARTTLS, 465 for SSL) |
+| "Emails in spam" | Missing DNS records | Configure SPF, DKIM, DMARC |
+| "Rate limit exceeded" | Too many emails sent | Check provider limits, upgrade plan |
+| "Domain not verified" | AWS SES sandbox mode | Verify domain in AWS SES console |
+
+#### Monitoring & Alerts
+
+- [ ] **Set up alerts** for:
+  - Failed email deliveries (> 5% bounce rate)
+  - Authentication failures
+  - Unusual send volumes
+  - Spam complaints
+
+- [ ] **Monitor metrics**:
+  - Delivery rate (target: > 95%)
+  - Open rate (industry average: 15-25%)
+  - Click rate (industry average: 2-5%)
+  - Bounce rate (target: < 5%)
+  - Spam complaint rate (target: < 0.1%)
+
+- [ ] **Log all email events** for audit trail
+
+#### Production Checklist
+
+- [ ] SMTP provider selected and configured
+- [ ] Domain verified with SMTP provider
+- [ ] SPF record added to DNS
+- [ ] DKIM record added to DNS
+- [ ] DMARC record added to DNS
+- [ ] Test email sent successfully
+- [ ] Monitoring and alerts configured
+- [ ] SMTP credentials stored in GitHub Secrets (for CI/CD)
+- [ ] Email templates reviewed and tested
+- [ ] Unsubscribe mechanism implemented (if sending marketing emails)
 
 ### 11. Monitoring & Logging
 
