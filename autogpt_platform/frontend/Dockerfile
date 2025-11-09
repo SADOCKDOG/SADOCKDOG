@@ -24,7 +24,9 @@ RUN if [ -f .env.production ]; then \
       # Local without custom .env: use defaults
       cp .env.default .env; \
     fi
-RUN pnpm run generate:api
+# Only generate API if not in standalone container scan mode
+ARG SKIP_API_GENERATION="false"
+RUN if [ "$SKIP_API_GENERATION" != "true" ]; then pnpm run generate:api; fi
 # In CI, we want NEXT_PUBLIC_PW_TEST=true during build so Next.js inlines it
 RUN if [ "$NEXT_PUBLIC_PW_TEST" = "true" ]; then NEXT_PUBLIC_PW_TEST=true NODE_OPTIONS="--max-old-space-size=4096" pnpm build; else NODE_OPTIONS="--max-old-space-size=4096" pnpm build; fi
 
@@ -49,4 +51,3 @@ USER nextjs
 
 EXPOSE 3000
 CMD ["node", "server.js"]
-
