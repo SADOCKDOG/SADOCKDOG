@@ -28,7 +28,7 @@ Este documento describe el escaneo de secretos con **Gitleaks** en modo bloquean
 
 1. ✅ ~~Endurecer reglas~~ (Completado en PR 2)
 2. ✅ ~~Activar fail mode~~ (Completado en PR 2)
-3. Hook pre-push local (`.pre-commit-config.yaml`) - PR 3
+3. ✅ ~~Hook pre-push local~~ (Completado en PR 3) - Ver `docs/PRECOMMIT_HOOKS.md`
 4. Baseline formal si aparecen falsos positivos inevitables
 5. Notificaciones automáticas (comentario en PR con resumen de hallazgos)
 
