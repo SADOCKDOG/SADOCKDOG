@@ -5,7 +5,6 @@ on:
     branches: [ master, dev ]
   pull_request:
     branches: [ master, dev ]
-  # Permitir ejecución manual y en PRs con permisos del repo base
   pull_request_target:
   workflow_dispatch:
 
@@ -19,26 +18,31 @@ concurrency:
 
 jobs:
   build-and-scan:
-    name: Build & Scan Images (Trivy + Syft)
+    name: Build & Scan Backend Image (Trivy + SBOM)
     runs-on: ubuntu-latest
     strategy:
       matrix:
         target:
-  # Frontend disabled: requires full OpenAPI spec for Orval generated endpoints`r`n          - name: backend
+          # Frontend scan disabled: requires full OpenAPI spec for Orval-generated endpoints
+          - name: backend
             context: .
             dockerfile: autogpt_platform/backend/Dockerfile
             tag: autogpt-backend:scan
     steps:
-      - name: Checkout
+      - name: 📥 Checkout
         uses: actions/checkout@v4
-      - name: Set up QEMU
+
+      - name: 🐳 Set up QEMU
         uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
+
+      - name: 🐳 Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Build image
+
+      - name: 🏗️ Build image
         run: |
           docker build -f "${{ matrix.target.dockerfile }}" "${{ matrix.target.context }}" -t "${{ matrix.target.tag }}"
-      - name: Trivy scan (SARIF)
+
+      - name: 🔎 Trivy scan (SARIF)
         uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: ${{ matrix.target.tag }}
@@ -48,7 +52,8 @@ jobs:
           scanners: vuln,secret,config
           severity: CRITICAL,HIGH,MEDIUM
           ignore-unfixed: true
-      - name: Trivy scan (table)
+
+      - name: 📄 Trivy scan (table)
         uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: ${{ matrix.target.tag }}
@@ -58,18 +63,21 @@ jobs:
           scanners: vuln
           severity: CRITICAL,HIGH,MEDIUM
           ignore-unfixed: true
-      - name: Generate SBOM (CycloneDX JSON)
+
+      - name: 📦 Generate SBOM (CycloneDX JSON)
         uses: anchore/sbom-action@v0
         with:
           image: ${{ matrix.target.tag }}
           format: cyclonedx-json
           output-file: sbom-${{ matrix.target.name }}.json
-      - name: Upload SARIF to Code Scanning
+
+      - name: 📤 Upload SARIF to Code Scanning
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-${{ matrix.target.name }}.sarif
           category: trivy-${{ matrix.target.name }}
-      - name: Upload scan artifacts
+
+      - name: 📎 Upload scan artifacts
         uses: actions/upload-artifact@v4
         with:
           name: container-scan-${{ matrix.target.name }}
