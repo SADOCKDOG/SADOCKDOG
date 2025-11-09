@@ -24,11 +24,10 @@ jobs:
     strategy:
       matrix:
         target:
-          # Frontend scanning temporarily disabled - requires backend API spec generation
-          # - name: frontend
-          #   context: autogpt_platform/frontend
-          #   dockerfile: autogpt_platform/frontend/Dockerfile
-          #   tag: autogpt-frontend:scan
+          - name: frontend
+            context: autogpt_platform/frontend
+            dockerfile: autogpt_platform/frontend/Dockerfile
+            tag: autogpt-frontend:scan
           - name: backend
             context: .
             dockerfile: autogpt_platform/backend/Dockerfile
@@ -42,7 +41,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - name: Build image
         run: |
-          docker build -f "${{ matrix.target.dockerfile }}" "${{ matrix.target.context }}" -t "${{ matrix.target.tag }}" --build-arg SKIP_API_GENERATION=true
+          docker build -f "${{ matrix.target.dockerfile }}" "${{ matrix.target.context }}" -t "${{ matrix.target.tag }}"
       - name: Trivy scan (SARIF)
         uses: aquasecurity/trivy-action@0.28.0
         with:

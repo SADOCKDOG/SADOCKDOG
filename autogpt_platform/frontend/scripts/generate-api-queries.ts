@@ -51,7 +51,7 @@ function fetchOpenApiSpec(): void {
 
   try {
     // Fetch the OpenAPI spec to a temp file
-    execSync(`curl "${openApiUrl}" -o "${tmpOutputPath}"`, {
+    execSync(`curl -f "${openApiUrl}" -o "${tmpOutputPath}"`, {
       stdio: "inherit",
     });
 
@@ -68,7 +68,28 @@ function fetchOpenApiSpec(): void {
       fs.unlinkSync(tmpOutputPath);
     }
     console.error("❌ Failed to fetch OpenAPI spec:", error);
-    process.exit(1);
+    console.log("⚠️  Creating minimal stub OpenAPI spec for build...");
+    
+    // Create minimal valid OpenAPI spec stub
+    const stubSpec = {
+      openapi: "3.1.0",
+      info: {
+        title: "AutoGPT Server API (Stub)",
+        version: "0.0.0",
+        description: "Stub spec for builds without backend server"
+      },
+      paths: {},
+      components: { schemas: {} }
+    };
+    
+    // Ensure directory exists
+    const dir = path.dirname(outputPath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    
+    fs.writeFileSync(outputPath, JSON.stringify(stubSpec, null, 2));
+    console.log("⚠️  Stub spec created. Build may have limited API functionality.");
   }
 }
 

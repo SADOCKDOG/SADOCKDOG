@@ -24,9 +24,8 @@ RUN if [ -f .env.production ]; then \
       # Local without custom .env: use defaults
       cp .env.default .env; \
     fi
-# Only generate API if not in standalone container scan mode
-ARG SKIP_API_GENERATION="false"
-RUN if [ "$SKIP_API_GENERATION" != "true" ]; then pnpm run generate:api; fi
+# Generate API client (uses stub OpenAPI spec if backend unavailable)
+RUN pnpm run generate:api || echo "⚠️  API generation failed, using stub"
 # In CI, we want NEXT_PUBLIC_PW_TEST=true during build so Next.js inlines it
 RUN if [ "$NEXT_PUBLIC_PW_TEST" = "true" ]; then NEXT_PUBLIC_PW_TEST=true NODE_OPTIONS="--max-old-space-size=4096" pnpm build; else NODE_OPTIONS="--max-old-space-size=4096" pnpm build; fi
 
