@@ -103,4 +103,8 @@ RUN poetry install --no-ansi --only-root
 
 ENV PORT=8000
 
+# Basic runtime healthcheck (FastAPI root or /health if implemented later)
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD curl -fsS http://localhost:/ || exit 1
 CMD ["poetry", "run", "rest"]
+
