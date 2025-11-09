@@ -90,3 +90,14 @@ jobs:
           retention-days: 30
           if-no-files-found: error
 
+      - name: ❌ Gate: fail on CRITICAL/HIGH vulns (ignore unfixed)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: ${{ matrix.target.tag }}
+          format: table
+          vuln-type: os,library
+          scanners: vuln
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: '1'
+
