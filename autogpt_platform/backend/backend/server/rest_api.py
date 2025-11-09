@@ -296,15 +296,29 @@ app.mount("/external-api", external_app)
 
 
 @app.get(path="/ready", tags=["health"], dependencies=[])
-async def readiness():
-    """Deep readiness probe.
-    Returns 200 only if core dependencies are initialized.
-    NOTE: Keep lightweight; avoid long blocking calls.
-    """
-    # Database connection
+async def ready():
+    """Readiness check with database, Redis, and RabbitMQ connectivity validation."""
+    # Check database connectivity
     if not backend.data.db.is_connected():
-        raise UnhealthyServiceError("Database not connected")
-    # Add future checks: redis, rabbitmq, migrations, feature flags
+        raise UnhealthyServiceError("Database is not connected")
+    
+    # Check Redis connectivity
+    try:
+        from backend.data import redis_client
+        redis_conn = await redis_client.get_redis_async()
+        await redis_conn.ping()
+    except Exception as e:
+        raise UnhealthyServiceError(f"Redis is not connected: {e}")
+    
+    # Check RabbitMQ connectivity
+    try:
+        from backend.util.clients import get_async_execution_queue
+        rabbitmq = await get_async_execution_queue()
+        if not rabbitmq.is_ready:
+            raise UnhealthyServiceError("RabbitMQ is not ready")
+    except Exception as e:
+        raise UnhealthyServiceError(f"RabbitMQ is not connected: {e}")
+    
     return {"status": "ready"}
 class AgentServer(backend.util.service.AppProcess):
     def run(self):
@@ -481,4 +495,5 @@ class AgentServer(backend.util.service.AppProcess):
 
     def set_test_dependency_overrides(self, overrides: dict):
         app.dependency_overrides.update(overrides)
+
 

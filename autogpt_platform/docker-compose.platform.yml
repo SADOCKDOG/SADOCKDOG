@@ -20,9 +20,10 @@ x-backend-env: &backend-env # Docker internal service hostnames (override localh
   # Override Supabase URL for Docker network
   SUPABASE_URL: http://kong:8000
   # Database connection string for Docker network
-  # This cannot be constructed like in .env because we cannot interpolate values set here (DB_HOST)
-  DATABASE_URL: postgresql://postgres:your-super-secret-and-long-postgres-password@db:5432/postgres?connect_timeout=60&schema=platform
-  DIRECT_URL: postgresql://postgres:your-super-secret-and-long-postgres-password@db:5432/postgres?connect_timeout=60&schema=platform
+  # NOTE: Password is loaded from .env file via POSTGRES_PASSWORD variable
+  # This uses the same password configured in your .env file for consistency
+  DATABASE_URL: postgresql://postgres:$${POSTGRES_PASSWORD:-your-super-secret-and-long-postgres-password}@db:5432/postgres?connect_timeout=60&schema=platform
+  DIRECT_URL: postgresql://postgres:$${POSTGRES_PASSWORD:-your-super-secret-and-long-postgres-password}@db:5432/postgres?connect_timeout=60&schema=platform
 
 # Common env_file configuration for backend services
 x-backend-env-files: &backend-env-files
@@ -64,9 +65,9 @@ services:
       start_period: 5s
 
   redis:
-    image: redis:latest
+    image: redis:7.4
     ports:
-      - "127.0.0.1:6379:6379"
+      - "6379:6379"
     networks:
       - app-network
     healthcheck:
@@ -74,8 +75,16 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
   rabbitmq:
-    image: rabbitmq:management
+    image: rabbitmq:3.13-management
     container_name: rabbitmq
     healthcheck:
       test: rabbitmq-diagnostics -q ping
@@ -87,8 +96,16 @@ services:
     environment:
       <<: *backend-env
     ports:
-      - "127.0.0.1:5672:5672"
-      - "127.0.0.1:15672:15672"
+      - "5672:5672"
+      - "15672:15672"
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 256M
 
   rest_server:
     build:
@@ -114,7 +131,13 @@ services:
     environment:
       <<: *backend-env
     ports:
-      - "127.0.0.1:8006:8006"
+      - "8006:8006"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8006/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
     networks:
       - app-network
     logging:
@@ -149,7 +172,7 @@ services:
     environment:
       <<: *backend-env
     ports:
-      - "127.0.0.1:8002:8002"
+      - "8002:8002"
     networks:
       - app-network
     logging:
@@ -182,7 +205,13 @@ services:
     environment:
       <<: *backend-env
     ports:
-      - "127.0.0.1:8001:8001"
+      - "8001:8001"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8001/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
     networks:
       - app-network
     logging:
@@ -211,7 +240,13 @@ services:
     environment:
       <<: *backend-env
     ports:
-      - "127.0.0.1:8005:8005"
+      - "8005:8005"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8005/health_check || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
     networks:
       - app-network
     logging:
@@ -242,24 +277,17 @@ services:
         condition: service_completed_successfully
       database_manager:
         condition: service_started
-    # healthcheck:
-    #   test:
-    #     [
-    #       "CMD",
-    #       "curl",
-    #       "-f",
-    #       "-X",
-    #       "POST",
-    #       "http://localhost:8003/health_check",
-    #     ]
-    #   interval: 10s
-    #   timeout: 10s
-    #   retries: 5
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8003/health_check || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
     <<: *backend-env-files
     environment:
       <<: *backend-env
     ports:
-      - "127.0.0.1:8003:8003"
+      - "8003:8003"
     networks:
       - app-network
     logging:
@@ -292,7 +320,13 @@ services:
     environment:
       <<: *backend-env
     ports:
-      - "127.0.0.1:8007:8007"
+      - "8007:8007"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8007/health_check || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
     networks:
       - app-network
     logging:
@@ -313,7 +347,7 @@ services:
       migrate:
         condition: service_completed_successfully
     ports:
-      - "127.0.0.1:3000:3000"
+      - "3000:3000"
     networks:
       - app-network
     logging:
@@ -336,4 +370,3 @@ services:
 networks:
   app-network:
     driver: bridge
-
