@@ -1,10 +1,56 @@
+# Git attributes configuration
+
+# Text file normalization
+* text=auto
+
+# ============================================
+# ARCHIVED: AutoGPT Classic (No Maintenance)
+# ============================================
+# Exclude /classic directory from GitHub stats and language detection
+classic/** linguist-documentation
+classic/** linguist-vendored
+
+# Specific exclusions for generated/vendored files
 classic/frontend/build/** linguist-generated
-
-**/poetry.lock linguist-generated
-
-docs/_javascript/** linguist-vendored
-
-# Exclude VCR cassettes from stats
 classic/forge/tests/vcr_cassettes/**/**.y*ml linguist-generated
 
-* text=auto
+# ============================================
+# Generated Files (All Projects)
+# ============================================
+**/poetry.lock linguist-generated
+**/pnpm-lock.yaml linguist-generated
+**/package-lock.json linguist-generated
+**/yarn.lock linguist-generated
+
+# Documentation vendored files
+docs/_javascript/** linguist-vendored
+
+# ============================================
+# Line Ending Configuration
+# ============================================
+# Ensure consistent line endings
+*.py text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Windows-specific files
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.otf binary

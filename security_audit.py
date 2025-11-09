@@ -42,6 +42,9 @@ EXCLUDE_PATTERNS = [
     r'\.next/',
     r'coverage/',
     r'htmlcov/',
+    r'\.pnpm/',
+    r'test_data\.py$',  # Test data files with known test passwords
+    r'e2e_test',        # E2E test files
 ]
 
 # File extensions to scan

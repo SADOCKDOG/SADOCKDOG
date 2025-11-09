@@ -15,6 +15,26 @@
 
 **AutoGPT** is a powerful platform that allows you to create, deploy, and manage continuous AI agents that automate complex workflows. 
 
+---
+
+## ⚠️ Important: AutoGPT Classic is Archived
+
+> **🚨 ATTENTION**: The /classic directory in this repository contains **AutoGPT Classic** - an **archived, unsupported** version of AutoGPT.
+>
+> - ❌ **NOT for production use** - Dependencies are outdated and unpatched
+> - ❌ **NO active maintenance** - No bug fixes or security updates
+> - ✅ **For educational/historical reference only**
+>
+> **Use AutoGPT Platform instead** (`/autogpt_platform/` directory) for:
+> - ✅ Active development and support
+> - ✅ Modern architecture (FastAPI + Next.js)
+> - ✅ Updated dependencies and security patches
+> - ✅ Full documentation and CI/CD
+>
+> 📚 [Read more about Classic archival](classic/ARCHIVED.md)
+
+---
+
 ## Hosting Options 
    - Download to self-host (Free!)
    - [Join the Waitlist](https://bit.ly/3ZDijAI) for the cloud-hosted beta (Closed Beta - Public release Coming Soon!)
