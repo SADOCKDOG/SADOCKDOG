@@ -1,4 +1,5 @@
 FROM debian:13-slim AS builder
+# ci: noop change to trigger container scan run
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
