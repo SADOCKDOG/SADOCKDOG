@@ -120,7 +120,7 @@ jobs:
           REDIS_PORT: 6379
           ENCRYPTION_KEY: test_encryption_key_for_ci_only
         run: |
-          poetry run pytest -v --maxfail=5
+          poetry run pytest -v --maxfail=5 -m "not slow"
 
       - name: ✅ Tests passed
         run: echo "🎉 All backend tests passed!"

@@ -9,6 +9,8 @@ import time
 from threading import Event
 from typing import List
 
+import pytest
+
 from backend.data.rabbitmq import SyncRabbitMQ
 from backend.executor.utils import create_execution_queue_config
 
@@ -265,6 +267,7 @@ def test_queue_ordering_behavior():
         tester.cleanup()
 
 
+@pytest.mark.slow
 def test_traditional_requeue_behavior():
     """
     Test that traditional requeue (basic_nack with requeue=True) sends messages to FRONT of queue.

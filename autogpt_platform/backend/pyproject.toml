@@ -130,6 +130,9 @@ ignore_patterns = []
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
 filterwarnings = [
     "ignore:'audioop' is deprecated:DeprecationWarning:discord.player",
     "ignore:invalid escape sequence:DeprecationWarning:tweepy.api",

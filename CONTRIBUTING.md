@@ -115,18 +115,53 @@ Use GitHub Issues with the **Feature Request** template:
 ## 🧪 Testing
 
 ### Backend
-```bash
-# Single test
-poetry run pytest backend/util/test_json.py -v
 
-# With output
-poetry run pytest -v --tb=short
+- Ejecuta solo tests rápidos (por defecto, como en CI):
+
+```bash
+poetry run pytest -v -m "not slow"
+```
+
+- Ejecuta todos los tests, incluyendo los lentos/integración:
+
+```bash
+poetry run pytest -v
+```
+
+- Ejecuta solo los tests marcados como lentos:
+
+```bash
+poetry run pytest -v -m slow
 ```
 
 ### Frontend
+
+**Tests unitarios (Vitest):**
+
 ```bash
-# Tests coming soon
-pnpm test
+cd autogpt_platform/frontend
+pnpm test:unit
+```
+
+**Tests unitarios en modo watch:**
+
+```bash
+cd autogpt_platform/frontend
+pnpm test:unit:watch
+```
+
+**Tests E2E (Playwright):**
+
+```bash
+cd autogpt_platform/frontend
+pnpm test:e2e
+```
+
+**Cobertura de tests unitarios:**
+
+```bash
+cd autogpt_platform/frontend
+pnpm test:unit:coverage
 ```
 
 ## 📚 Documentation

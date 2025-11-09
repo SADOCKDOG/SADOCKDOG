@@ -20,6 +20,7 @@ Built on top of [AutoGPT](https://github.com/Significant-Gravitas/AutoGPT), SADO
 - 📖 **[Architecture](../ARCHITECTURE.md)** - System design and tech stack
 - 🚀 **[Deployment Guide](../DEPLOYMENT.md)** - Production deployment instructions
 - 🤝 **[Contributing](../CONTRIBUTING.md)** - How to contribute to SADOCKDOG
+- 🧪 **[Testing Guide](../TESTING.md)** - Comprehensive testing documentation
 - 🔐 **[Security](SECURITY.md)** - Security best practices
 
 ## ✨ What Makes SADOCKDOG Different?
