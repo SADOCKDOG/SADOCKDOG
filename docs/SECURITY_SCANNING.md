@@ -193,4 +193,23 @@ Solo si hay secretos históricos ya rotados que no puedes eliminar del historial
 - `Syft/Anchore` para generar SBOM (Software Bill of Materials) – ACTIVO
 - Integración con GitHub Container Registry – PENDIENTE
 
+---
+
+## Plan de remediación
+
+El plan detallado de acciones y verificación posterior al gate de severidades está en `docs/SECURITY_REMEDIATION_PLAN.md`.
+
+Resumen rápido:
+- Gate falla si hay CRITICAL/HIGH (ignore-unfixed=true) tras subir artefactos.
+- Objetivo inmediato: confirmar desaparición de dependencias JS en runtime y parchear Starlette/FastAPI si se reportan CVEs.
+- Script de comparación: `scripts/compare_security_artifacts.ps1` (diff SBOM/SARIF entre runs para medir impacto del hardening).
+
+Checklist post‑run:
+1. Revisar resultado del workflow (SUCCESS/FAIL).
+2. Comparar SBOM/SARIF anterior vs nuevo con el script.
+3. Actualizar tabla real en `SECURITY_REMEDIATION_PLAN.md` y fechar entrada en sección "Remediation History" (añadirla si no existe).
+4. Ejecutar actualizaciones de paquetes Python según severidades.
+
+---
+
 Ver `AGENTS.md` y `.github/copilot-instructions.md` para convenciones de commit y PR.
