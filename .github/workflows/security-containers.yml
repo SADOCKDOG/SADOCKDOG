@@ -24,10 +24,11 @@ jobs:
     strategy:
       matrix:
         target:
-          - name: frontend
-            context: autogpt_platform/frontend
-            dockerfile: autogpt_platform/frontend/Dockerfile
-            tag: autogpt-frontend:scan
+          # Frontend scanning temporarily disabled - requires backend API spec generation
+          # - name: frontend
+          #   context: autogpt_platform/frontend
+          #   dockerfile: autogpt_platform/frontend/Dockerfile
+          #   tag: autogpt-frontend:scan
           - name: backend
             context: .
             dockerfile: autogpt_platform/backend/Dockerfile
