@@ -1,4 +1,4 @@
-# Seguridad: Escaneo de secretos
+# Seguridad: Escaneo de secretos y contenedores
 
 Este documento describe el escaneo de secretos con **Gitleaks** en modo bloqueante.
 
@@ -23,6 +23,39 @@ Este documento describe el escaneo de secretos con **Gitleaks** en modo bloquean
 2. **Allowlist**: Excepciones explícitas para plantillas (`.env.example`) y docs
 3. **Fallo**: Si detecta secreto real → workflow falla → bloquea merge
 4. **SARIF**: Genera reporte visible en Security > Code scanning alerts
+
+## Escaneo de contenedores (backend)
+
+El pipeline de contenedores construye la imagen de backend y ejecuta:
+
+- Trivy (vulnerabilidades OS + librerías; incluye secretos y config) con salida SARIF y tabla
+- SBOM CycloneDX mediante Anchore
+- Subida de SARIF a Code Scanning y artifacts del run
+
+Workflow: `.github/workflows/security-containers.yml`
+
+Ejecución:
+
+1. Manual: Actions > "security - containers" > Run workflow
+2. Automático: en push/PR hacia `master` y `dev`
+3. Programado: diariamente a las 03:00 UTC (cron: `0 3 * * *`)
+
+Artefactos:
+
+- `trivy-backend.sarif` – Code Scanning
+- `trivy-backend.txt` – Resumen legible
+- `sbom-backend.json` – Inventario de componentes
+
+Notas de hardening aplicadas:
+
+- Imagen backend actualizada a Node 22.x solo para el runtime requerido por Prisma
+- Eliminado `npm`/`npx` y `node_modules` de la imagen final (uso solo del binario `node` si fuera necesario), reduciendo superficie de ataque
+
+Próximos pasos sugeridos:
+
+- Programar ejecución diaria (`schedule`) para detección temprana de nuevas CVEs
+- Incorporar gating opcional (fallar el job si hay CRITICAL/HIGH sin fix aplicado)
+- Reintegrar escaneo de frontend cuando el OpenAPI completo permita generar endpoints con Orval
 
 ## Próximas mejoras previstas
 
@@ -156,8 +189,8 @@ Solo si hay secretos históricos ya rotados que no puedes eliminar del historial
 - Reportes SARIF en Code Scanning
 
 **PR 5**: Escaneo de contenedores
-- `Trivy` para imágenes Docker (OS + app vulnerabilities)
-- `Syft` para generar SBOM (Software Bill of Materials)
-- Integración con GitHub Container Registry
+- `Trivy` para imágenes Docker (OS + app vulnerabilities) – ACTIVO para backend
+- `Syft/Anchore` para generar SBOM (Software Bill of Materials) – ACTIVO
+- Integración con GitHub Container Registry – PENDIENTE
 
 Ver `AGENTS.md` y `.github/copilot-instructions.md` para convenciones de commit y PR.

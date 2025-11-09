@@ -15,7 +15,7 @@ RUN apt-get update --allow-releaseinfo-change --fix-missing \
     && apt-get install -y curl ca-certificates gnupg \
     && mkdir -p /etc/apt/keyrings \
     && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
-    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
+    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
 
 # Update package list and install Python, Node.js, and build dependencies
 RUN apt-get update \
@@ -72,11 +72,8 @@ RUN apt-get update && apt-get install -y \
 COPY --from=builder /app /app
 COPY --from=builder /usr/local/lib/python3* /usr/local/lib/python3*
 COPY --from=builder /usr/local/bin/poetry /usr/local/bin/poetry
-# Copy Node.js installation for Prisma
+# Copy only Node.js runtime for Prisma Query Engine (no global npm packages)
 COPY --from=builder /usr/bin/node /usr/bin/node
-COPY --from=builder /usr/lib/node_modules /usr/lib/node_modules
-COPY --from=builder /usr/bin/npm /usr/bin/npm
-COPY --from=builder /usr/bin/npx /usr/bin/npx
 COPY --from=builder /root/.cache/prisma-python/binaries /root/.cache/prisma-python/binaries
 
 ENV PATH="/app/autogpt_platform/backend/.venv/bin:$PATH"
