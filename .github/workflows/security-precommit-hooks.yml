@@ -95,7 +95,8 @@ jobs:
         continue-on-error: true
         run: |
           cd /tmp/test-gitleaks
-          gitleaks detect --config $GITHUB_WORKSPACE/.gitleaks.toml --no-git --verbose
+          # No usar --config para que use reglas built-in de Gitleaks
+          gitleaks detect --no-git --verbose
 
       - name: Verify detection worked
         if: steps.test-detection.outcome == 'success'
