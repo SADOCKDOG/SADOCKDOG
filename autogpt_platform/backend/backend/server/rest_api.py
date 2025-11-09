@@ -294,13 +294,18 @@ app.include_router(
 app.mount("/external-api", external_app)
 
 
-@app.get(path="/health", tags=["health"], dependencies=[])
-async def health():
+
+@app.get(path="/ready", tags=["health"], dependencies=[])
+async def readiness():
+    """Deep readiness probe.
+    Returns 200 only if core dependencies are initialized.
+    NOTE: Keep lightweight; avoid long blocking calls.
+    """
+    # Database connection
     if not backend.data.db.is_connected():
-        raise UnhealthyServiceError("Database is not connected")
-    return {"status": "healthy"}
-
-
+        raise UnhealthyServiceError("Database not connected")
+    # Add future checks: redis, rabbitmq, migrations, feature flags
+    return {"status": "ready"}
 class AgentServer(backend.util.service.AppProcess):
     def run(self):
         server_app = starlette.middleware.cors.CORSMiddleware(
@@ -476,3 +481,4 @@ class AgentServer(backend.util.service.AppProcess):
 
     def set_test_dependency_overrides(self, overrides: dict):
         app.dependency_overrides.update(overrides)
+
