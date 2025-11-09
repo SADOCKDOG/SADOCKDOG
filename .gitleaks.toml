@@ -15,6 +15,13 @@ regexes = [
   "fake_mail_user",
 ]
 
+# Do not flag example templates or setup docs
+paths = [
+  ".*\\.env\\.example$",
+  "autogpt_platform/.*\\.env\\.default$",
+  "docs/ENVIRONMENT_SETUP\\.md"
+]
+
 [[rules]]
 id = "ignore-localhost-and-127"
 # Ignore URLs pointing to localhost/127.0.0.1 in code and envs
