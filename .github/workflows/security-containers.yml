@@ -1,95 +1,71 @@
-name: Security - Container Image Scanning
-
-# Escanea imágenes Docker construidas desde los Dockerfiles del monorepo
-# Herramientas:
-#  - Trivy: Vulnerabilidades (OS + libs) + configuración
-#  - Syft: SBOM CycloneDX para inventario
-# Salida:
-#  - SARIF (Trivy) -> Code Scanning
-#  - SBOM artefactos (Syft)
-# Frecuencia: push a Dockerfiles + diario
+name: security - containers
 
 on:
   push:
-    branches: ["**"]
-    paths:
-      - "autogpt_platform/backend/Dockerfile"
-      - "autogpt_platform/frontend/Dockerfile"
-      - "classic/Dockerfile.autogpt"
-      - ".github/workflows/security-containers.yml"
+    branches: [ master, dev ]
   pull_request:
-    branches: [master, dev]
-  schedule:
-    - cron: "0 4 * * *"  # Diario 04:00 UTC
+    branches: [ master, dev ]
 
 permissions:
   contents: read
   security-events: write
+
+concurrency:
+  group: containers-scan-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-and-scan:
     name: Build & Scan Images (Trivy + Syft)
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
       matrix:
         target:
-          - name: backend
-            context: autogpt_platform/backend
-            dockerfile: autogpt_platform/backend/Dockerfile
-            tag: autogpt-backend:scan
           - name: frontend
             context: autogpt_platform/frontend
             dockerfile: autogpt_platform/frontend/Dockerfile
             tag: autogpt-frontend:scan
-          - name: classic
-            context: classic
-            dockerfile: classic/Dockerfile.autogpt
-            tag: autogpt-classic:scan
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
-
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
       - name: Build image
         run: |
           docker build -f "${{ matrix.target.dockerfile }}" "${{ matrix.target.context }}" -t "${{ matrix.target.tag }}"
-
-      - name: Install Trivy
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y wget
-          wget -qO - https://aquasecurity.github.io/trivy-repo/debian/public.key | sudo apt-key add -
-          echo deb https://aquasecurity.github.io/trivy-repo/debian stable main | sudo tee -a /etc/apt/sources.list.d/trivy.list
-          sudo apt-get update -y
-          sudo apt-get install -y trivy
-          trivy --version
-
-      - name: Install Syft
-        run: |
-          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
-          syft version
-
-      - name: Scan image with Trivy (Vulnerabilities)
-        run: |
-          trivy image --severity HIGH,CRITICAL --format sarif -o trivy-${{ matrix.target.name }}.sarif "${{ matrix.target.tag }}" || true
-          trivy image --severity HIGH,CRITICAL --format table -o trivy-${{ matrix.target.name }}.txt "${{ matrix.target.tag }}" || true
-
-      - name: Generate SBOM with Syft (CycloneDX JSON)
-        run: |
-          syft "${{ matrix.target.tag }}" -o cyclonedx-json > sbom-${{ matrix.target.name }}.json
-
-      - name: Upload SARIF report
-        if: always()
+      - name: Trivy scan (SARIF)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: ${{ matrix.target.tag }}
+          format: sarif
+          output: trivy-${{ matrix.target.name }}.sarif
+          vuln-type: os,library
+          scanners: vuln,secret,config
+          severity: CRITICAL,HIGH,MEDIUM
+          ignore-unfixed: true
+      - name: Trivy scan (table)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: ${{ matrix.target.tag }}
+          format: table
+          output: trivy-${{ matrix.target.name }}.txt
+          vuln-type: os,library
+          scanners: vuln
+          severity: CRITICAL,HIGH,MEDIUM
+          ignore-unfixed: true
+      - name: Generate SBOM (CycloneDX JSON)
+        uses: anchore/syft-action@v0.17.0
+        with:
+          image: ${{ matrix.target.tag }}
+          output: cyclonedx-json=sbom-${{ matrix.target.name }}.json
+      - name: Upload SARIF to Code Scanning
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-${{ matrix.target.name }}.sarif
           category: trivy-${{ matrix.target.name }}
-
-      - name: Upload artifacts (reports + SBOM)
-        if: always()
+      - name: Upload scan artifacts
         uses: actions/upload-artifact@v4
         with:
           name: container-scan-${{ matrix.target.name }}
@@ -98,32 +74,4 @@ jobs:
             trivy-${{ matrix.target.name }}.txt
             sbom-${{ matrix.target.name }}.json
           retention-days: 30
-
-  summary:
-    name: Summarize Results
-    runs-on: ubuntu-latest
-    needs: build-and-scan
-    if: always()
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: scan-artifacts
-
-      - name: Generate summary
-        run: |
-          echo "# 🐳 Container Image Scanning Summary" >> $GITHUB_STEP_SUMMARY
-          echo "**Date**: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          for dir in scan-artifacts/container-scan-*; do
-            NAME=$(echo "$dir" | sed 's|scan-artifacts/container-scan-||')
-            CRITICAL=$(grep -i "CRITICAL" "$dir/trivy-$NAME.txt" | wc -l || true)
-            HIGH=$(grep -i "HIGH" "$dir/trivy-$NAME.txt" | wc -l || true)
-            echo "### $NAME" >> $GITHUB_STEP_SUMMARY
-            echo "- CRITICAL findings: **$CRITICAL**" >> $GITHUB_STEP_SUMMARY
-            echo "- HIGH findings: **$HIGH**" >> $GITHUB_STEP_SUMMARY
-            echo "- SBOM: sbom-$NAME.json" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-          done
-          echo "🔗 SARIF reports disponibles en Security > Code scanning" >> $GITHUB_STEP_SUMMARY
-          echo "📦 SBOM (CycloneDX) disponible en artifacts" >> $GITHUB_STEP_SUMMARY
+          if-no-files-found: error
