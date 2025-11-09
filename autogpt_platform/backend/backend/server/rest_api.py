@@ -27,6 +27,7 @@ import backend.server.v2.admin.credit_admin_routes
 import backend.server.v2.admin.store_admin_routes
 import backend.server.v2.builder
 import backend.server.v2.builder.routes
+import backend.server.v2.chat.routes as chat_routes
 import backend.server.v2.library.db
 import backend.server.v2.library.model
 import backend.server.v2.library.routes
@@ -284,17 +285,41 @@ app.include_router(
     tags=["v1", "email"],
     prefix="/api/email",
 )
+app.include_router(
+    chat_routes.router,
+    tags=["v2", "chat"],
+    prefix="/api/chat",
+)
 
 app.mount("/external-api", external_app)
 
 
-@app.get(path="/health", tags=["health"], dependencies=[])
-async def health():
+
+@app.get(path="/ready", tags=["health"], dependencies=[])
+async def ready():
+    """Readiness check with database, Redis, and RabbitMQ connectivity validation."""
+    # Check database connectivity
     if not backend.data.db.is_connected():
         raise UnhealthyServiceError("Database is not connected")
-    return {"status": "healthy"}
-
-
+    
+    # Check Redis connectivity
+    try:
+        from backend.data import redis_client
+        redis_conn = await redis_client.get_redis_async()
+        await redis_conn.ping()
+    except Exception as e:
+        raise UnhealthyServiceError(f"Redis is not connected: {e}")
+    
+    # Check RabbitMQ connectivity
+    try:
+        from backend.util.clients import get_async_execution_queue
+        rabbitmq = await get_async_execution_queue()
+        if not rabbitmq.is_ready:
+            raise UnhealthyServiceError("RabbitMQ is not ready")
+    except Exception as e:
+        raise UnhealthyServiceError(f"RabbitMQ is not connected: {e}")
+    
+    return {"status": "ready"}
 class AgentServer(backend.util.service.AppProcess):
     def run(self):
         server_app = starlette.middleware.cors.CORSMiddleware(
@@ -470,3 +495,6 @@ class AgentServer(backend.util.service.AppProcess):
 
     def set_test_dependency_overrides(self, overrides: dict):
         app.dependency_overrides.update(overrides)
+
+
+

@@ -1,0 +1,9 @@
+# pnpm workspace configuration
+# Este archivo es necesario para que pnpm funcione correctamente en CI
+packages:
+  - '.'
+
+onlyBuiltDependencies:
+  - "@vercel/speed-insights"
+  - esbuild
+  - msw
