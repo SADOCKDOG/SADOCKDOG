@@ -1,5 +1,5 @@
 # Base stage for both dev and prod
-FROM node:21-alpine AS base
+FROM node:22-alpine AS base
 WORKDIR /app
 RUN corepack enable
 COPY package.json pnpm-lock.yaml ./
@@ -31,7 +31,7 @@ RUN if [ "$SKIP_API_GENERATION" != "true" ]; then pnpm run generate:api; fi
 RUN if [ "$NEXT_PUBLIC_PW_TEST" = "true" ]; then NEXT_PUBLIC_PW_TEST=true NODE_OPTIONS="--max-old-space-size=4096" pnpm build; else NODE_OPTIONS="--max-old-space-size=4096" pnpm build; fi
 
 # Prod stage - based on NextJS reference Dockerfile https://github.com/vercel/next.js/blob/64271354533ed16da51be5dce85f0dbd15f17517/examples/with-docker/Dockerfile
-FROM node:21-alpine AS prod
+FROM node:22-alpine AS prod
 ENV NODE_ENV=production
 ENV HOSTNAME=0.0.0.0
 WORKDIR /app
