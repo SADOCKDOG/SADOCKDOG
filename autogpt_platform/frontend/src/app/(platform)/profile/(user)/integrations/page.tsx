@@ -8,6 +8,7 @@ import { Trash2Icon } from "lucide-react";
 import { KeyIcon } from "@phosphor-icons/react/dist/ssr";
 import { providerIcons } from "@/app/(platform)/library/agents/[id]/components/AgentRunsView/components/CredentialsInputs/CredentialsInputs";
 import { CredentialsProvidersContext } from "@/providers/agent-credentials/credentials-provider";
+import { getHiddenCredentialIds } from "@/lib/config/hiddenCredentials";
 import {
   Table,
   TableBody,
@@ -85,33 +86,11 @@ export default function UserIntegrationsPage() {
     [providers, toast],
   );
 
-  //TODO: remove when the way system credentials are handled is updated
-  // This contains ids for built-in "Use Credits for X" credentials
+  // System credentials that should be hidden from the UI
+  // These are built-in "Use Credits for X" credentials
+  // Configured via environment variables (see .env.example)
   const hiddenCredentials = useMemo(
-    () => [
-      "744fdc56-071a-4761-b5a5-0af0ce10a2b5", // Ollama
-      "fdb7f412-f519-48d1-9b5f-d2f73d0e01fe", // Revid
-      "760f84fc-b270-42de-91f6-08efe1b512d0", // Ideogram
-      "6b9fc200-4726-4973-86c9-cd526f5ce5db", // Replicate
-      "53c25cb8-e3ee-465c-a4d1-e75a4c899c2a", // OpenAI
-      "24e5d942-d9e3-4798-8151-90143ee55629", // Anthropic
-      "aad82a89-9794-4ebb-977f-d736aa5260a3", // AI/ML
-      "4ec22295-8f97-4dd1-b42b-2c6957a02545", // Groq
-      "7f7b0654-c36b-4565-8fa7-9a52575dfae2", // D-ID
-      "7f26de70-ba0d-494e-ba76-238e65e7b45f", // Jina
-      "66f20754-1b81-48e4-91d0-f4f0dd82145f", // Unreal Speech
-      "b5a0e27d-0c98-4df3-a4b9-10193e1f3c40", // Open Router
-      "6c0f5bd0-9008-4638-9d79-4b40b631803e", // FAL
-      "96153e04-9c6c-4486-895f-5bb683b1ecec", // Exa
-      "78d19fd7-4d59-4a16-8277-3ce310acf2b7", // E2B
-      "96b83908-2789-4dec-9968-18f0ece4ceb3", // Nvidia
-      "ed55ac19-356e-4243-a6cb-bc599e9b716f", // Mem0
-      "544c62b5-1d0f-4156-8fb4-9525f11656eb", // Apollo
-      "3bcdbda3-84a3-46af-8fdb-bfd2472298b8", // SmartLead
-      "63a6e279-2dc2-448e-bf57-85776f7176dc", // ZeroBounce
-      "9aa1bde0-4947-4a70-a20c-84daa3850d52", // Google Maps
-      "d44045af-1c33-4833-9e19-752313214de2", // Llama API
-    ],
+    () => getHiddenCredentialIds(),
     [],
   );
 

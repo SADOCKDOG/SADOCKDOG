@@ -1,0 +1,925 @@
+{
+  "id": "550e8400-e29b-41d4-a716-446655440001",
+  "version": 1,
+  "is_active": true,
+  "is_template": true,
+  "name": "Android App Developer",
+  "description": "Agente que crea apps Android completas: repo GitHub + código Kotlin + UI Material Design + documentación",
+  "nodes": [
+    {
+      "id": "note-instructions",
+      "block_id": "06d4a367-06f0-4b01-9a1f-3f455c9e904f",
+      "input_default": {
+        "text": "📱 ANDROID APP DEVELOPER\n\nEste agente crea apps Android completas.\n\nUSO:\nEjecuta con estos inputs:\n- app_name: nombre sin espacios (ej: CalculadoraSimple)\n- app_description: qué hace la app\n- features: lista de características\n\nEl agente creará:\n✅ Repositorio GitHub\n✅ Código Kotlin con ViewBinding\n✅ UI Material Design 3\n✅ Gradle configurado\n✅ AndroidManifest.xml\n✅ Resources (strings, colors)\n✅ README profesional\n\n⚠️ IMPORTANTE:\nConfigura tus credenciales OAuth de GitHub en cada bloque GitHub antes de ejecutar."
+      },
+      "metadata": {
+        "position": {
+          "x": -800,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": "input-app-name",
+      "block_id": "1ff065e9-88e8-4358-9d82-8dc91f622ba9",
+      "input_default": {
+        "input": "CalculadoraSimple"
+      },
+      "metadata": {
+        "position": {
+          "x": -400,
+          "y": 100
+        }
+      }
+    },
+    {
+      "id": "input-description",
+      "block_id": "1ff065e9-88e8-4358-9d82-8dc91f622ba9",
+      "input_default": {
+        "input": "Calculadora básica para Android"
+      },
+      "metadata": {
+        "position": {
+          "x": -400,
+          "y": 250
+        }
+      }
+    },
+    {
+      "id": "input-features",
+      "block_id": "1ff065e9-88e8-4358-9d82-8dc91f622ba9",
+      "input_default": {
+        "input": "suma, resta, multiplicación, división, interfaz Material Design"
+      },
+      "metadata": {
+        "position": {
+          "x": -400,
+          "y": 400
+        }
+      }
+    },
+    {
+      "id": "github-create-repo",
+      "block_id": "029ec3b8-1cfd-46d3-b6aa-28e4a706efd1",
+      "input_default": {
+        "private": false,
+        "auto_init": true,
+        "gitignore_template": "Java"
+      },
+      "metadata": {
+        "position": {
+          "x": 0,
+          "y": 200
+        }
+      }
+    },
+    {
+      "id": "ai-gradle",
+      "block_id": "1f292d4a-41a4-4977-9684-7c8d560b9f91",
+      "input_default": {
+        "model": "gpt-4o-mini",
+        "sys_prompt": "You are an expert Android developer. Generate only valid Gradle build files without markdown formatting or explanations. Output raw Gradle code only.",
+        "prompt": "Generate a complete app/build.gradle file for Android app.\n\nRequirements:\n- Android SDK 34\n- Kotlin 1.9+\n- ViewBinding enabled\n- Material Design 3: com.google.android.material:material:1.11.0\n- Dependencies: androidx.core:core-ktx:1.12.0, androidx.appcompat:appcompat:1.6.1, androidx.constraintlayout:constraintlayout:2.1.4\n\nOutput ONLY the Gradle file content, no explanations."
+      },
+      "metadata": {
+        "position": {
+          "x": 400,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": "github-file-gradle",
+      "block_id": "8fd132ac-b917-428a-8159-d62893e8a3fe",
+      "input_default": {
+        "file_path": "app/build.gradle",
+        "branch": "main",
+        "commit_message": "Add app build.gradle"
+      },
+      "metadata": {
+        "position": {
+          "x": 800,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": "ai-manifest",
+      "block_id": "1f292d4a-41a4-4977-9684-7c8d560b9f91",
+      "input_default": {
+        "model": "gpt-4o-mini",
+        "sys_prompt": "You are an expert Android developer. Generate only valid XML without markdown. Output raw XML only."
+      },
+      "metadata": {
+        "position": {
+          "x": 400,
+          "y": 200
+        }
+      }
+    },
+    {
+      "id": "template-manifest",
+      "block_id": "3b37bb6d-0f4f-4969-8a61-8019e8c90f5c",
+      "input_default": {
+        "template": "Generate AndroidManifest.xml for app: {app_name}\n\nDescription: {description}\nFeatures: {features}\n\nInclude:\n- Package: com.sadockdog.{app_name_lower}\n- MainActivity\n- Material theme\n- Min SDK 24, Target SDK 34\n- Required permissions\n\nOutput ONLY XML, no markdown.",
+        "values": {}
+      },
+      "metadata": {
+        "position": {
+          "x": 200,
+          "y": 200
+        }
+      }
+    },
+    {
+      "id": "github-file-manifest",
+      "block_id": "8fd132ac-b917-428a-8159-d62893e8a3fe",
+      "input_default": {
+        "file_path": "app/src/main/AndroidManifest.xml",
+        "branch": "main",
+        "commit_message": "Add AndroidManifest"
+      },
+      "metadata": {
+        "position": {
+          "x": 800,
+          "y": 200
+        }
+      }
+    },
+    {
+      "id": "ai-mainactivity",
+      "block_id": "1f292d4a-41a4-4977-9684-7c8d560b9f91",
+      "input_default": {
+        "model": "gpt-4o",
+        "sys_prompt": "You are an expert Android Kotlin developer. Generate only valid Kotlin code without markdown. Use modern Android practices. Output raw Kotlin code starting with package declaration."
+      },
+      "metadata": {
+        "position": {
+          "x": 400,
+          "y": 400
+        }
+      }
+    },
+    {
+      "id": "template-mainactivity",
+      "block_id": "3b37bb6d-0f4f-4969-8a61-8019e8c90f5c",
+      "input_default": {
+        "template": "Generate MainActivity.kt for: {app_name}\n\nDescription: {description}\nFeatures: {features}\n\nRequirements:\n- Kotlin with ViewBinding\n- Material Design 3\n- Implement all features\n- Comments for complex logic\n- Best practices\n\nOutput ONLY Kotlin code, no markdown.",
+        "values": {}
+      },
+      "metadata": {
+        "position": {
+          "x": 200,
+          "y": 400
+        }
+      }
+    },
+    {
+      "id": "github-file-mainactivity",
+      "block_id": "8fd132ac-b917-428a-8159-d62893e8a3fe",
+      "input_default": {
+        "file_path": "app/src/main/java/com/sadockdog/app/MainActivity.kt",
+        "branch": "main",
+        "commit_message": "Implement MainActivity"
+      },
+      "metadata": {
+        "position": {
+          "x": 800,
+          "y": 400
+        }
+      }
+    },
+    {
+      "id": "ai-layout",
+      "block_id": "1f292d4a-41a4-4977-9684-7c8d560b9f91",
+      "input_default": {
+        "model": "gpt-4o-mini",
+        "sys_prompt": "You are an expert Android UI designer. Generate only valid XML layouts with Material Design 3 components. Output raw XML only."
+      },
+      "metadata": {
+        "position": {
+          "x": 400,
+          "y": 600
+        }
+      }
+    },
+    {
+      "id": "template-layout",
+      "block_id": "3b37bb6d-0f4f-4969-8a61-8019e8c90f5c",
+      "input_default": {
+        "template": "Generate activity_main.xml for: {app_name}\n\nFeatures: {features}\n\nRequirements:\n- ConstraintLayout root\n- Material Design 3 components\n- Responsive design\n- Proper IDs\n- 16dp/8dp spacing\n\nOutput ONLY XML, no markdown.",
+        "values": {}
+      },
+      "metadata": {
+        "position": {
+          "x": 200,
+          "y": 600
+        }
+      }
+    },
+    {
+      "id": "github-file-layout",
+      "block_id": "8fd132ac-b917-428a-8159-d62893e8a3fe",
+      "input_default": {
+        "file_path": "app/src/main/res/layout/activity_main.xml",
+        "branch": "main",
+        "commit_message": "Add main layout"
+      },
+      "metadata": {
+        "position": {
+          "x": 800,
+          "y": 600
+        }
+      }
+    },
+    {
+      "id": "ai-readme",
+      "block_id": "1f292d4a-41a4-4977-9684-7c8d560b9f91",
+      "input_default": {
+        "model": "gpt-4o",
+        "sys_prompt": "You are a technical writer. Generate professional README files in Markdown."
+      },
+      "metadata": {
+        "position": {
+          "x": 400,
+          "y": 800
+        }
+      }
+    },
+    {
+      "id": "template-readme",
+      "block_id": "3b37bb6d-0f4f-4969-8a61-8019e8c90f5c",
+      "input_default": {
+        "template": "Generate professional README.md for: {app_name}\n\nDescription: {description}\nFeatures: {features}\n\nInclude:\n1. Overview with emoji\n2. Features list\n3. Requirements (SDK 24+, Kotlin 1.9+)\n4. Installation & Build\n5. Project Structure\n6. Technologies (Kotlin, Material 3, AndroidX)\n7. Contributing\n8. License (MIT)\n\nMake it professional with emojis and code blocks.",
+        "values": {}
+      },
+      "metadata": {
+        "position": {
+          "x": 200,
+          "y": 800
+        }
+      }
+    },
+    {
+      "id": "github-file-readme",
+      "block_id": "8fd132ac-b917-428a-8159-d62893e8a3fe",
+      "input_default": {
+        "file_path": "README.md",
+        "branch": "main",
+        "commit_message": "Add README"
+      },
+      "metadata": {
+        "position": {
+          "x": 800,
+          "y": 800
+        }
+      }
+    },
+    {
+      "id": "output-message",
+      "block_id": "3b37bb6d-0f4f-4969-8a61-8019e8c90f5c",
+      "input_default": {
+        "template": "✅ Android app '{app_name}' created!\n\n📦 Repository: {repo_url}\n🔗 Clone: {clone_url}\n\n📱 Next steps:\n1. git clone {clone_url}\n2. Open in Android Studio\n3. Sync Gradle\n4. Run on device/emulator\n\n🚀 Includes:\n- Kotlin code\n- Material Design 3\n- Complete project structure\n- Professional docs\n\nHappy coding! 🎉",
+        "values": {}
+      },
+      "metadata": {
+        "position": {
+          "x": 1200,
+          "y": 400
+        }
+      }
+    },
+    {
+      "id": "output-final",
+      "block_id": "06d4a367-06f0-4b01-9a1f-3f455c9e904f",
+      "input_default": {},
+      "metadata": {
+        "position": {
+          "x": 1600,
+          "y": 400
+        }
+      }
+    }
+  ],
+  "links": [
+    {
+      "source_id": "input-app-name",
+      "source_name": "output",
+      "sink_id": "github-create-repo",
+      "sink_name": "name"
+    },
+    {
+      "source_id": "input-description",
+      "source_name": "output",
+      "sink_id": "github-create-repo",
+      "sink_name": "description"
+    },
+    {
+      "source_id": "github-create-repo",
+      "source_name": "url",
+      "sink_id": "github-file-gradle",
+      "sink_name": "repo_url"
+    },
+    {
+      "source_id": "github-create-repo",
+      "source_name": "url",
+      "sink_id": "github-file-manifest",
+      "sink_name": "repo_url"
+    },
+    {
+      "source_id": "github-create-repo",
+      "source_name": "url",
+      "sink_id": "github-file-mainactivity",
+      "sink_name": "repo_url"
+    },
+    {
+      "source_id": "github-create-repo",
+      "source_name": "url",
+      "sink_id": "github-file-layout",
+      "sink_name": "repo_url"
+    },
+    {
+      "source_id": "github-create-repo",
+      "source_name": "url",
+      "sink_id": "github-file-readme",
+      "sink_name": "repo_url"
+    },
+    {
+      "source_id": "ai-gradle",
+      "source_name": "response",
+      "sink_id": "github-file-gradle",
+      "sink_name": "content"
+    },
+    {
+      "source_id": "template-manifest",
+      "source_name": "output",
+      "sink_id": "ai-manifest",
+      "sink_name": "prompt"
+    },
+    {
+      "source_id": "ai-manifest",
+      "source_name": "response",
+      "sink_id": "github-file-manifest",
+      "sink_name": "content"
+    },
+    {
+      "source_id": "input-app-name",
+      "source_name": "output",
+      "sink_id": "template-manifest",
+      "sink_name": "app_name"
+    },
+    {
+      "source_id": "input-description",
+      "source_name": "output",
+      "sink_id": "template-manifest",
+      "sink_name": "description"
+    },
+    {
+      "source_id": "input-features",
+      "source_name": "output",
+      "sink_id": "template-manifest",
+      "sink_name": "features"
+    },
+    {
+      "source_id": "template-mainactivity",
+      "source_name": "output",
+      "sink_id": "ai-mainactivity",
+      "sink_name": "prompt"
+    },
+    {
+      "source_id": "ai-mainactivity",
+      "source_name": "response",
+      "sink_id": "github-file-mainactivity",
+      "sink_name": "content"
+    },
+    {
+      "source_id": "input-app-name",
+      "source_name": "output",
+      "sink_id": "template-mainactivity",
+      "sink_name": "app_name"
+    },
+    {
+      "source_id": "input-description",
+      "source_name": "output",
+      "sink_id": "template-mainactivity",
+      "sink_name": "description"
+    },
+    {
+      "source_id": "input-features",
+      "source_name": "output",
+      "sink_id": "template-mainactivity",
+      "sink_name": "features"
+    },
+    {
+      "source_id": "template-layout",
+      "source_name": "output",
+      "sink_id": "ai-layout",
+      "sink_name": "prompt"
+    },
+    {
+      "source_id": "ai-layout",
+      "source_name": "response",
+      "sink_id": "github-file-layout",
+      "sink_name": "content"
+    },
+    {
+      "source_id": "input-app-name",
+      "source_name": "output",
+      "sink_id": "template-layout",
+      "sink_name": "app_name"
+    },
+    {
+      "source_id": "input-features",
+      "source_name": "output",
+      "sink_id": "template-layout",
+      "sink_name": "features"
+    },
+    {
+      "source_id": "template-readme",
+      "source_name": "output",
+      "sink_id": "ai-readme",
+      "sink_name": "prompt"
+    },
+    {
+      "source_id": "ai-readme",
+      "source_name": "response",
+      "sink_id": "github-file-readme",
+      "sink_name": "content"
+    },
+    {
+      "source_id": "input-app-name",
+      "source_name": "output",
+      "sink_id": "template-readme",
+      "sink_name": "app_name"
+    },
+    {
+      "source_id": "input-description",
+      "source_name": "output",
+      "sink_id": "template-readme",
+      "sink_name": "description"
+    },
+    {
+      "source_id": "input-features",
+      "source_name": "output",
+      "sink_id": "template-readme",
+      "sink_name": "features"
+    },
+    {
+      "source_id": "input-app-name",
+      "source_name": "output",
+      "sink_id": "output-message",
+      "sink_name": "app_name"
+    },
+    {
+      "source_id": "github-create-repo",
+      "source_name": "url",
+      "sink_id": "output-message",
+      "sink_name": "repo_url"
+    },
+    {
+      "source_id": "github-create-repo",
+      "source_name": "clone_url",
+      "sink_id": "output-message",
+      "sink_name": "clone_url"
+    },
+    {
+      "source_id": "output-message",
+      "source_name": "output",
+      "sink_id": "output-final",
+      "sink_name": "text"
+    }
+  ]
+}
+    {
+      "id": "input-2",
+      "block_id": "c0a8e994-ebf7-4609-a6bb-88933460ed6d",
+      "input_default": {
+        "name": "app_description",
+        "description": "Descripción de lo que debe hacer la aplicación",
+        "value": "Aplicación de ejemplo"
+      },
+      "metadata": {
+        "position": {
+          "x": 100,
+          "y": 200
+        }
+      }
+    },
+    {
+      "id": "input-3",
+      "block_id": "c0a8e994-ebf7-4609-a6bb-88933460ed6d",
+      "input_default": {
+        "name": "features",
+        "description": "Lista de características separadas por comas",
+        "value": "interfaz simple, botones de acción, almacenamiento local"
+      },
+      "metadata": {
+        "position": {
+          "x": 100,
+          "y": 300
+        }
+      }
+    },
+    {
+      "id": "github-create-repo",
+      "block_id": "029ec3b8-1cfd-46d3-b6aa-28e4a706efd1",
+      "input_default": {
+        "name": "{{app_name}}",
+        "description": "{{app_description}}",
+        "private": false,
+        "auto_init": true,
+        "gitignore_template": "Java"
+      },
+      "metadata": {
+        "position": {
+          "x": 400,
+          "y": 150
+        }
+      }
+    },
+    {
+      "id": "ai-gradle",
+      "block_id": "f2b33865-c8b0-4ab3-bc37-45d7dfbf4345",
+      "input_default": {
+        "prompt": "Generate a complete build.gradle file for a new Android app named {{app_name}}.\nApp description: {{app_description}}\nRequired features: {{features}}\n\nInclude:\n- Android SDK 34 (latest)\n- Kotlin 1.9+\n- Material Design 3 (com.google.android.material:material:1.11.0)\n- ViewBinding enabled\n- Dependencies: AndroidX Core, AppCompat, ConstraintLayout, Material Components\n- Compose UI (optional but recommended)\n\nGenerate ONLY the build.gradle (app level) content. No explanations, no markdown code blocks, just the raw Gradle file content.",
+        "sys_prompt": "You are an expert Android developer. Generate only valid Gradle build files without any markdown formatting or explanations.",
+        "model": "gpt-4o-mini",
+        "api_key": ""
+      },
+      "metadata": {
+        "position": {
+          "x": 700,
+          "y": 100
+        }
+      }
+    },
+    {
+      "id": "github-file-gradle",
+      "block_id": "8fd132ac-b917-428a-8159-d62893e8a3fe",
+      "input_default": {
+        "file_path": "app/build.gradle",
+        "branch": "main",
+        "commit_message": "Add app build.gradle configuration"
+      },
+      "metadata": {
+        "position": {
+          "x": 1000,
+          "y": 100
+        }
+      }
+    },
+    {
+      "id": "ai-manifest",
+      "block_id": "f2b33865-c8b0-4ab3-bc37-45d7dfbf4345",
+      "input_default": {
+        "prompt": "Generate AndroidManifest.xml for Android app: {{app_name}}\nApp description: {{app_description}}\nFeatures: {{features}}\n\nInclude:\n- Package name: com.sadockdog.{{app_name}}\n- Main Activity (MainActivity)\n- Application theme using Material Design 3\n- Required permissions based on features\n- Minimum SDK 24, Target SDK 34\n\nGenerate ONLY the AndroidManifest.xml content. No explanations, no markdown, just raw XML.",
+        "sys_prompt": "You are an expert Android developer. Generate only valid AndroidManifest.xml files without any markdown formatting or explanations.",
+        "model": "gpt-4o-mini",
+        "api_key": ""
+      },
+      "metadata": {
+        "position": {
+          "x": 700,
+          "y": 250
+        }
+      }
+    },
+    {
+      "id": "github-file-manifest",
+      "block_id": "8fd132ac-b917-428a-8159-d62893e8a3fe",
+      "input_default": {
+        "file_path": "app/src/main/AndroidManifest.xml",
+        "branch": "main",
+        "commit_message": "Add AndroidManifest.xml"
+      },
+      "metadata": {
+        "position": {
+          "x": 1000,
+          "y": 250
+        }
+      }
+    },
+    {
+      "id": "ai-mainactivity",
+      "block_id": "f2b33865-c8b0-4ab3-bc37-45d7dfbf4345",
+      "input_default": {
+        "prompt": "Generate MainActivity.kt for Android app: {{app_name}}\nDescription: {{app_description}}\nFeatures to implement: {{features}}\n\nRequirements:\n- Kotlin language\n- Use ViewBinding\n- Material Design 3 components\n- Implement all features from the description\n- Add comments for complex logic\n- Follow Android best practices (MVVM pattern if complex)\n- Handle lifecycle correctly\n- Use proper Kotlin idioms (data classes, sealed classes, coroutines if needed)\n\nGenerate ONLY the MainActivity.kt code. No explanations, no markdown code blocks, just raw Kotlin code starting with package declaration.",
+        "sys_prompt": "You are an expert Android Kotlin developer. Generate only valid Kotlin code without any markdown formatting or explanations. Use modern Android development practices.",
+        "model": "gpt-4o",
+        "api_key": ""
+      },
+      "metadata": {
+        "position": {
+          "x": 700,
+          "y": 400
+        }
+      }
+    },
+    {
+      "id": "github-file-mainactivity",
+      "block_id": "8fd132ac-b917-428a-8159-d62893e8a3fe",
+      "input_default": {
+        "file_path": "app/src/main/java/com/sadockdog/{{app_name}}/MainActivity.kt",
+        "branch": "main",
+        "commit_message": "Implement MainActivity with core features"
+      },
+      "metadata": {
+        "position": {
+          "x": 1000,
+          "y": 400
+        }
+      }
+    },
+    {
+      "id": "ai-layout",
+      "block_id": "f2b33865-c8b0-4ab3-bc37-45d7dfbf4345",
+      "input_default": {
+        "prompt": "Generate activity_main.xml layout for Android app: {{app_name}}\nFeatures: {{features}}\n\nRequirements:\n- ConstraintLayout or LinearLayout as root\n- Material Design 3 components (MaterialButton, MaterialCardView, TextInputLayout, etc.)\n- Responsive design that works on phones and tablets\n- Proper spacing and margins (16dp, 8dp following Material guidelines)\n- UI elements for all features in: {{features}}\n- Use proper IDs for all interactive elements\n- Follow Material Design color and typography system\n\nGenerate ONLY the activity_main.xml content. No explanations, no markdown, just raw XML layout code.",
+        "sys_prompt": "You are an expert Android UI/UX designer. Generate only valid Android XML layouts using Material Design 3 components without any markdown formatting or explanations.",
+        "model": "gpt-4o-mini",
+        "api_key": ""
+      },
+      "metadata": {
+        "position": {
+          "x": 700,
+          "y": 550
+        }
+      }
+    },
+    {
+      "id": "github-file-layout",
+      "block_id": "8fd132ac-b917-428a-8159-d62893e8a3fe",
+      "input_default": {
+        "file_path": "app/src/main/res/layout/activity_main.xml",
+        "branch": "main",
+        "commit_message": "Add main activity layout"
+      },
+      "metadata": {
+        "position": {
+          "x": 1000,
+          "y": 550
+        }
+      }
+    },
+    {
+      "id": "ai-strings",
+      "block_id": "f2b33865-c8b0-4ab3-bc37-45d7dfbf4345",
+      "input_default": {
+        "prompt": "Generate strings.xml resource file for Android app: {{app_name}}\nFeatures: {{features}}\n\nInclude string resources for:\n- App name\n- All UI text (buttons, labels, hints, error messages)\n- Feature-specific strings based on: {{features}}\n- Common strings (ok, cancel, save, delete, etc.)\n\nGenerate ONLY the strings.xml content. No explanations, no markdown, just raw XML.",
+        "sys_prompt": "You are an expert Android developer. Generate only valid strings.xml resource files without any markdown formatting or explanations.",
+        "model": "gpt-4o-mini",
+        "api_key": ""
+      },
+      "metadata": {
+        "position": {
+          "x": 700,
+          "y": 700
+        }
+      }
+    },
+    {
+      "id": "github-file-strings",
+      "block_id": "8fd132ac-b917-428a-8159-d62893e8a3fe",
+      "input_default": {
+        "file_path": "app/src/main/res/values/strings.xml",
+        "branch": "main",
+        "commit_message": "Add string resources"
+      },
+      "metadata": {
+        "position": {
+          "x": 1000,
+          "y": 700
+        }
+      }
+    },
+    {
+      "id": "ai-colors",
+      "block_id": "f2b33865-c8b0-4ab3-bc37-45d7dfbf4345",
+      "input_default": {
+        "prompt": "Generate colors.xml resource file for Android app using Material Design 3 color system.\n\nInclude:\n- Primary, secondary, tertiary colors\n- Surface, background colors\n- Error color\n- On-primary, on-secondary, on-background colors for contrast\n- Light and dark variants\n- Use modern, accessible color palette\n\nGenerate ONLY the colors.xml content. No explanations, no markdown, just raw XML.",
+        "sys_prompt": "You are an expert Android UI/UX designer. Generate only valid colors.xml resource files following Material Design 3 guidelines without any markdown formatting.",
+        "model": "gpt-4o-mini",
+        "api_key": ""
+      },
+      "metadata": {
+        "position": {
+          "x": 700,
+          "y": 850
+        }
+      }
+    },
+    {
+      "id": "github-file-colors",
+      "block_id": "8fd132ac-b917-428a-8159-d62893e8a3fe",
+      "input_default": {
+        "file_path": "app/src/main/res/values/colors.xml",
+        "branch": "main",
+        "commit_message": "Add Material Design 3 color palette"
+      },
+      "metadata": {
+        "position": {
+          "x": 1000,
+          "y": 850
+        }
+      }
+    },
+    {
+      "id": "ai-readme",
+      "block_id": "f2b33865-c8b0-4ab3-bc37-45d7dfbf4345",
+      "input_default": {
+        "prompt": "Generate a professional README.md for Android app: {{app_name}}\n\nDescription: {{app_description}}\nFeatures: {{features}}\n\nInclude sections:\n1. App Overview (with emoji)\n2. Features (bulleted list)\n3. Screenshots (placeholder text)\n4. Requirements (Android SDK 24+, Gradle 8.0+, Kotlin 1.9+)\n5. Installation & Build Instructions\n   - Clone the repository\n   - Open in Android Studio\n   - Sync Gradle\n   - Run on emulator or device\n6. Project Structure (explain folder organization)\n7. Technologies Used (Kotlin, Material Design 3, AndroidX, ViewBinding)\n8. Development Setup\n9. Contributing Guidelines\n10. License (MIT)\n11. Contact/Author\n\nMake it professional, well-formatted with Markdown, use emojis appropriately, and include code blocks for terminal commands.\n\nGenerate ONLY the README.md content.",
+        "sys_prompt": "You are a technical writer specialized in Android documentation. Generate professional, well-structured README files in Markdown format.",
+        "model": "gpt-4o",
+        "api_key": ""
+      },
+      "metadata": {
+        "position": {
+          "x": 700,
+          "y": 1000
+        }
+      }
+    },
+    {
+      "id": "github-file-readme",
+      "block_id": "8fd132ac-b917-428a-8159-d62893e8a3fe",
+      "input_default": {
+        "file_path": "README.md",
+        "branch": "main",
+        "commit_message": "Add comprehensive README documentation"
+      },
+      "metadata": {
+        "position": {
+          "x": 1000,
+          "y": 1000
+        }
+      }
+    },
+    {
+      "id": "ai-project-gradle",
+      "block_id": "f2b33865-c8b0-4ab3-bc37-45d7dfbf4345",
+      "input_default": {
+        "prompt": "Generate the root/project-level build.gradle file for an Android project.\n\nInclude:\n- Latest Gradle plugin version (8.2.0+)\n- Kotlin plugin\n- Maven repositories (google(), mavenCentral())\n- Proper buildscript dependencies\n\nGenerate ONLY the root build.gradle content. No explanations, no markdown, just raw Gradle file.",
+        "sys_prompt": "You are an expert Android developer. Generate only valid Gradle build files without any markdown formatting.",
+        "model": "gpt-4o-mini",
+        "api_key": ""
+      },
+      "metadata": {
+        "position": {
+          "x": 700,
+          "y": 1150
+        }
+      }
+    },
+    {
+      "id": "github-file-project-gradle",
+      "block_id": "8fd132ac-b917-428a-8159-d62893e8a3fe",
+      "input_default": {
+        "file_path": "build.gradle",
+        "branch": "main",
+        "commit_message": "Add root project Gradle configuration"
+      },
+      "metadata": {
+        "position": {
+          "x": 1000,
+          "y": 1150
+        }
+      }
+    },
+    {
+      "id": "output-success",
+      "block_id": "e6735d62-8a46-4acd-8e74-00e89886f70a",
+      "input_default": {
+        "name": "completion_message",
+        "value": "✅ Android app '{{app_name}}' created successfully!\n\n📦 Repository: {{repo_url}}\n🔗 Clone URL: {{clone_url}}\n\n📱 Next steps:\n1. Clone the repository: git clone {{clone_url}}\n2. Open in Android Studio\n3. Sync Gradle\n4. Run on emulator or physical device\n\n🚀 Your app includes:\n- Complete project structure\n- Kotlin MainActivity\n- Material Design 3 UI\n- Gradle configuration\n- Professional documentation\n\nHappy coding! 🎉"
+      },
+      "metadata": {
+        "position": {
+          "x": 1300,
+          "y": 500
+        }
+      }
+    }
+  ],
+  "links": [
+    {
+      "source_id": "input-1",
+      "source_name": "value",
+      "sink_id": "github-create-repo",
+      "sink_name": "name"
+    },
+    {
+      "source_id": "input-2",
+      "source_name": "value",
+      "sink_id": "github-create-repo",
+      "sink_name": "description"
+    },
+    {
+      "source_id": "github-create-repo",
+      "source_name": "url",
+      "sink_id": "github-file-gradle",
+      "sink_name": "repo_url"
+    },
+    {
+      "source_id": "github-create-repo",
+      "source_name": "url",
+      "sink_id": "github-file-manifest",
+      "sink_name": "repo_url"
+    },
+    {
+      "source_id": "github-create-repo",
+      "source_name": "url",
+      "sink_id": "github-file-mainactivity",
+      "sink_name": "repo_url"
+    },
+    {
+      "source_id": "github-create-repo",
+      "source_name": "url",
+      "sink_id": "github-file-layout",
+      "sink_name": "repo_url"
+    },
+    {
+      "source_id": "github-create-repo",
+      "source_name": "url",
+      "sink_id": "github-file-strings",
+      "sink_name": "repo_url"
+    },
+    {
+      "source_id": "github-create-repo",
+      "source_name": "url",
+      "sink_id": "github-file-colors",
+      "sink_name": "repo_url"
+    },
+    {
+      "source_id": "github-create-repo",
+      "source_name": "url",
+      "sink_id": "github-file-readme",
+      "sink_name": "repo_url"
+    },
+    {
+      "source_id": "github-create-repo",
+      "source_name": "url",
+      "sink_id": "github-file-project-gradle",
+      "sink_name": "repo_url"
+    },
+    {
+      "source_id": "github-create-repo",
+      "source_name": "url",
+      "sink_id": "output-success",
+      "sink_name": "repo_url"
+    },
+    {
+      "source_id": "github-create-repo",
+      "source_name": "clone_url",
+      "sink_id": "output-success",
+      "sink_name": "clone_url"
+    },
+    {
+      "source_id": "ai-gradle",
+      "source_name": "response",
+      "sink_id": "github-file-gradle",
+      "sink_name": "content"
+    },
+    {
+      "source_id": "ai-manifest",
+      "source_name": "response",
+      "sink_id": "github-file-manifest",
+      "sink_name": "content"
+    },
+    {
+      "source_id": "ai-mainactivity",
+      "source_name": "response",
+      "sink_id": "github-file-mainactivity",
+      "sink_name": "content"
+    },
+    {
+      "source_id": "ai-layout",
+      "source_name": "response",
+      "sink_id": "github-file-layout",
+      "sink_name": "content"
+    },
+    {
+      "source_id": "ai-strings",
+      "source_name": "response",
+      "sink_id": "github-file-strings",
+      "sink_name": "content"
+    },
+    {
+      "source_id": "ai-colors",
+      "source_name": "response",
+      "sink_id": "github-file-colors",
+      "sink_name": "content"
+    },
+    {
+      "source_id": "ai-readme",
+      "source_name": "response",
+      "sink_id": "github-file-readme",
+      "sink_name": "content"
+    },
+    {
+      "source_id": "ai-project-gradle",
+      "source_name": "response",
+      "sink_id": "github-file-project-gradle",
+      "sink_name": "content"
+    }
+  ]
+}

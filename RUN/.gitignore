@@ -1,0 +1,104 @@
+# ====================================================================
+# SADOCKDOG Manager - Local Management Only - NEVER COMMIT TO GITHUB
+# ====================================================================
+# Este directorio es SOLO para gestión local del proyecto
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Logs y reportes (pueden contener info sensible)
+logs/
+*.log
+REPORTE_*.md
+ESTADO_*.md
+RESUMEN_*.txt
+RESUMEN_*.md
+*_SISTEMA.md
+CAMBIOS_*.md
+ACTUALIZACIONES_*.md
+
+# Environment (CRÍTICO - nunca subir)
+.env
+.env.*
+!.env.example
+!.env.security.template
+
+# Seguridad (NUNCA COMMIT)
+SECURITY.md
+CREDENTIALS.txt
+PASSWORDS.txt
+ACCESOS_WEB.md
+RESUMEN_SEGURIDAD.*
+credentials/
+secrets/
+password_manager_*
+*.key
+*.pem
+*.p12
+
+# Backups (pueden contener datos sensibles)
+*.backup
+*.backup_*
+*.bak
+*.bak_*
+backup/
+backups/
+backup_*/
+
+# Directorio personal
+MIO/
+PERSONAL/
+
+# Documentación interna (no pública)
+GUIA_*.md
+INSTRUCCIONES_*.md
+LEEME_*.txt
+README.md
+README_*.md
+!README_PUBLIC.md
+CHANGELOG.md
+CHANGELOG_*.md
+IMPLEMENTACION_*.md
+INDICE_*.md
+INDEX.txt
+INICIO.md
+QUICK_*.md
+SYNC_*.md
+RESUMEN_*.md
+
+# Scripts de gestión privados
+sadockdog_manager.py
+START.bat
+start.bat
+quick_start.*
+fix_*.py
+generate_*.py
+system_*.py
+sync_*.py
+verify_*.py
+security_*.bat
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary
+*.tmp
+*.temp
+temp/
+tmp/
